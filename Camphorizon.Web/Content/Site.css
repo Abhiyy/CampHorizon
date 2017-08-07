@@ -223,3 +223,7 @@ blockquote:before {
 .topMargin {
 margin-top:10% !important;
 }
+
+.rightBorder {
+    border-right:1px solid #e3e3e3;
+}
