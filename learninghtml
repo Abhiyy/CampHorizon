@@ -234,4 +234,87 @@ _LayoutMaster.cshtml
 </section>
 </body>
 </html>
+==========================================
+
+CREATE TABLE [dbo].[Packages]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[Name]	varchar(256),
+	[Description] nvarchar(max),
+	[Price] decimal(8,2),
+	[Active] bit,
+	[Duration] smallint,
+	[CreatedDate] datetime,
+	[UpdatedDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30)
+)
+
+CREATE TABLE [dbo].[PackageInclusions]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[PackageID] int,
+	[Inclusions] nvarchar(max),
+	[CreateDate] datetime,
+	[UpdateDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30), 
+    CONSTRAINT [FK_PackageInclusions_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+
+CREATE TABLE [dbo].[PackageExclusions]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[PackageID] int,
+	[Exclusions] nvarchar(max),
+	[CreateDate] datetime,
+	[UpdateDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30), 
+    CONSTRAINT [FK_PackageExclusions_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+
+
+CREATE TABLE [dbo].[PackageItinerary]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[PackageID] int,
+	[Itinerary] nvarchar(max),
+	[CreateDate] datetime,
+	[UpdateDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30), 
+	CONSTRAINT [FK_PackageItinerary_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+CREATE TABLE [dbo].[CancellationTerms]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [CancellationTerm] NVARCHAR(MAX) NULL
+)
+
+CREATE TABLE [dbo].[PackageCancellationTermsMappings]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[PackageID] int,
+	[CancellationTermID] int, 
+    CONSTRAINT [FK_PackageCancellationTermsMappings_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+
+)
+
+CREATE TABLE [dbo].[Facilities]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [Facility] NVARCHAR(200) NULL
+)
+
+CREATE TABLE [dbo].[PackageFacilityMapping]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[PackageID] int,
+	[FacilityID] int, 
+    CONSTRAINT [FK_PackageFacilityMapping_ToTable] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
 
