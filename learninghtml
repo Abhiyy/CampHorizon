@@ -318,3 +318,550 @@ CREATE TABLE [dbo].[PackageFacilityMapping]
     CONSTRAINT [FK_PackageFacilityMapping_ToTable] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
 )
 
+9-Aug-2017
+------------------------
+
+_PartialAlerts.cshtml
+=========================
+
+@{
+    var alerts = TempData.ContainsKey(Camphorizon.Web.Helpers.Alert.TempDataKey)
+                ? (List<Camphorizon.Web.Helpers.Alert>)TempData[Camphorizon.Web.Helpers.Alert.TempDataKey]
+                : new List<Camphorizon.Web.Helpers.Alert>();
+
+    foreach (var alert in alerts)
+    {
+        var dismissableClass = alert.Dismissable ? "alert-dismissable" : null;
+        <div class="alert alert-@alert.AlertStyle @dismissableClass">
+            @if (alert.Dismissable)
+            {
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            }
+            @Html.Raw(alert.Message)
+           
+        </div>
+    }
+
+   
+    }
+
+WebPortalConfigurationsViewModel.cs
+=================================================
+
+public class WebPortalConfigurationsViewModel
+    {
+        public string Contact { get; set; }
+
+        public string Address { get; set; }
+
+        public string HelpEmail { get; set; }
+    }
+    
+    
+    _LayoutMaster.cshtml
+    =======================================
+    
+    <!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/bootstrap.readable.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link href="~/Content/animate.min.css" rel="stylesheet" />
+</head>
+<body>
+    <header class="col-md-12 col-sm-12 col-lg-12">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid ">
+      <div class="row" style="float:right;">
+          <div class="col-md-12">
+              <span class="label label-info"><i class="fa fa-phone"></i> @ViewBag.Contact.ToString()</span>
+              <span class="label label-primary"><i class="fa fa-envelope"></i>  @ViewBag.HelpEmail.ToString()</span>
+          </div>
+         
+      </div>
+
+      <div class="row">
+          <div class="col-md-12">
+              <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#">
+                      @*<strong>The Camp Horizon</strong>*@
+                      <img src="~/Images/thecamphorizonlogo2.png" style="width:200px;margin-top:-20%" />
+                  </a>
+              </div>
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+                  <ul class="nav navbar-nav">
+                      <li><a href="#">About Us <span class="sr-only">(current)</span></a></li>
+
+                      <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <i class="fa fa-hotel"></i> Rooms<span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+                              <li><a href="#">Standard</a></li>
+                              <li><a href="#">Deluxe</a></li>
+
+                              <li class="divider"></li>
+                              <li><a href="#">Luxury</a></li>
+                          </ul>
+                      </li>
+                      <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-bicycle"></i> Activities <span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+                              <li><a href="#">Trekking</a></li>
+                              <li><a href="#">Nature Walk</a></li>
+                              <li><a href="#">Local Sightseeing</a></li>
+                          </ul>
+                      </li>
+                      @*  <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Explore <span class="caret"></span></a>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Mukteshwar</a></li>
+                        <li><a href="#">Binsar</a></li>
+                        <li><a href="#">Munsiyari</a></li>
+                      </ul>
+                    </li>*@
+                      <li><a href="#"><i class="fa fa-image"></i> Gallery</a></li>
+                  </ul>
+                  <form class="navbar-form navbar-left" role="search">
+                      <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Search for packages">
+                      </div>
+                      <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                  </form>
+                  <ul class="nav navbar-nav navbar-right ">
+                      @*<li><a href="#" class="btn btn-default">Call: <i class="fa fa-mobile"></i> +91-8860795399</a></li>*@
+                      @if(!User.Identity.IsAuthenticated)
+         {
+              <li><a href="@Url.Action("Index","Login")" class="btn btn-default"> <i class="fa fa-user"></i> Login</a></li>
+         }else{
+              <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user"></i> Hi, Admin <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                      <li><a href="#">My Profile</a></li>
+                      <li><a href="@Url.Action("Logout","Login")">Log out</a></li>
+
+                  </ul>
+              </li>
+         }
+                  </ul>
+              </div>
+              </div>
+          </div>
+  </div>
+</nav>
+    </header>
+    <div>
+        @RenderBody()
+    </div>
+    <hr />
+    <section id="footer">
+	<footer>
+		<div class="row sm-footer">
+			<div class="container clear-padding">
+				<div class="col-md-3 col-sm-6 footer-about-box">
+					<h4>THE CAMP HORIZON</h4>
+					<p>Some text.</p>
+					<a href="#">READ MORE</a>
+				</div>
+				<div class="col-md-3 col-sm-6 contact-box">
+					<h4>CONTACT US</h4>
+					<p><i class="fa fa-home"></i> @ViewBag.Address</p>
+					<p><i class="fa fa-envelope-o"></i> @ViewBag.HelpEmail</p>
+					<p><i class="fa fa-phone"></i> @ViewBag.Contact</p>
+					<p class="social-media">
+						<a href="#"><i class="fa fa-facebook"></i></a>
+						<a href="#"><i class="fa fa-twitter"></i></a>
+						<a href="#"><i class="fa fa-google-plus"></i></a>
+						<a href="#"><i class="fa fa-instagram"></i></a>
+					</p>
+				</div>
+				<div class="clearfix visible-sm-block"></div>
+				<div class="col-md-3 col-sm-6 footer-gallery">
+					<h4>GALLERY</h4>
+					<img src="../Images/camp1.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp2.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp3.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp1.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp2.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp3.jpg" alt="cruise" style="width:80px;height:60px">
+				</div>
+				<div class="col-md-3 col-sm-6 footer-subscribe">
+					<h4>SUBSCRIBE</h4>
+					<p>Don't miss any deal. Subscribe to get offers alerts.</p>
+					<form>
+						<div class="col-md-10 col-sm-10 col-xs-9 clear-padding">
+							<input type="email" required="" class="form-control" placeholder="Enter Your Email">
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-3 clear-padding">
+							<button type="submit"><i class="fa fa-paper-plane"></i></button>
+						</div>
+					</form>	
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<div class="row sm-footer-nav text-center">
+			<p>
+				<a href="#">HOME</a>
+				<a href="#">ROOM</a>
+				<a href="#">SERVICE</a>
+				<a href="#">GALLERY</a>
+			</p>
+			<p class="copyright">
+				<i class="fa fa-copyright"></i>	2017 THE CAMP HORIZON ALL RIGHTS RESERVED
+			</p>
+			<div class="go-up">
+				<a href="#"><i class="fa fa-arrow-up"></i></a>
+			</div>
+		</div>
+	</footer>
+</section>
+</body>
+</html>
+
+PortalConfigurationsController.cs
+======================================
+[Authorize]
+    public class PortalConfigurationsController : BaseController
+    {
+        //
+        // GET: /PortalConfigurations/
+        CommonHelper _commonHelper;
+        public ActionResult Index()
+        {
+            _commonHelper = new CommonHelper();
+           
+            return View(_commonHelper.GetHomeConfiguration());
+        }
+
+        [HttpPost]
+        public ActionResult Index(WebPortalConfigurationsViewModel model) {
+
+            _commonHelper = new CommonHelper();
+
+            if (_commonHelper.UpdateHomeConfiguration(model))
+            {
+                Success("The home configurations updated successfully.",true);
+            }
+            else {
+                Danger("The home configurations not updated successfully.", true);
+            }
+
+            return View();
+        }
+           
+        }
+
+BaseController.cs
+=============================
+
+ public class BaseController : Controller
+    {
+        //
+        // GET: /Base/
+        public camphorizonEntities db;
+        public BaseController() {
+            db = new camphorizonEntities();
+            var contactDetails = db.ApplicationSettings.Where(x=>x.Type == "Contact").ToList();
+            ViewBag.Contact = contactDetails.Where(x => x.Name == "Helpline").FirstOrDefault().Value;
+            ViewBag.HelpEmail = contactDetails.Where(x => x.Name == "HelpEmail").FirstOrDefault().Value;
+            ViewBag.Address = contactDetails.Where(x => x.Name == "Address").FirstOrDefault().Value;
+            db = null;
+        }
+
+        public void Success(string message, bool dismissable = false)
+        {
+            AddAlert(AlertStyles.Success, message, dismissable);
+        }
+
+        public void Information(string message, bool dismissable = false)
+        {
+            AddAlert(AlertStyles.Information, message, dismissable);
+        }
+
+        public void Warning(string message, bool dismissable = false)
+        {
+            AddAlert(AlertStyles.Warning, message, dismissable);
+        }
+
+        public void Danger(string message, bool dismissable = false)
+        {
+            AddAlert(AlertStyles.Danger, message, dismissable);
+        }
+
+        private void AddAlert(string alertStyle, string message, bool dismissable)
+        {
+            var alerts = TempData.ContainsKey(Alert.TempDataKey)
+                ? (List<Alert>)TempData[Alert.TempDataKey]
+                : new List<Alert>();
+
+            alerts.Add(new Alert
+            {
+                AlertStyle = alertStyle,
+                Message = message,
+                Dismissable = dismissable
+            });
+
+            TempData[Alert.TempDataKey] = alerts;
+        }
+    }
+	
+Alert.cs
+====================================
+
+public class Alert
+    {
+        public const string TempDataKey = "TempDataAlerts";
+
+        public string AlertStyle { get; set; }
+        public string Message { get; set; }
+        public bool Dismissable { get; set; }
+    }
+
+    public static class AlertStyles
+    {
+        public const string Success = "success";
+        public const string Information = "info";
+        public const string Warning = "warning";
+        public const string Danger = "danger";
+    }
+    
+CommonHelper.cs
+==============================
+ public class CommonHelper
+    {
+       public WebPortalConfigurationsViewModel GetHomeConfiguration()
+        {
+
+            using (camphorizonEntities db = new camphorizonEntities())
+            {
+
+                var config = db.ApplicationSettings.Where(c => c.Type == "Contact").ToList();
+                return new WebPortalConfigurationsViewModel()
+                {
+                    Address = config.Where(x => x.Name == "Address").FirstOrDefault().Value,
+                    Contact = config.Where(x => x.Name == "Helpline").FirstOrDefault().Value,
+                    HelpEmail = config.Where(x => x.Name == "HelpEmail").FirstOrDefault().Value
+                };
+            }
+
+        }
+
+       public bool UpdateHomeConfiguration(WebPortalConfigurationsViewModel model)
+       {
+           using (camphorizonEntities db = new camphorizonEntities())
+           {
+               var config = db.ApplicationSettings.Where(x => x.Name == "Address").FirstOrDefault();
+               config.Value = model.Address;
+               db.Entry(config).State = System.Data.Entity.EntityState.Modified;
+               db.SaveChanges();
+
+               config = db.ApplicationSettings.Where(x => x.Name == "Helpline").FirstOrDefault();
+               config.Value = model.Contact;
+               db.Entry(config).State = System.Data.Entity.EntityState.Modified;
+               db.SaveChanges();
+
+               config = db.ApplicationSettings.Where(x => x.Name == "HelpEmail").FirstOrDefault();
+               config.Value = model.HelpEmail;
+               db.Entry(config).State = System.Data.Entity.EntityState.Modified;
+               db.SaveChanges();
+
+               return true;
+           }
+
+           
+       }
+    }
+    
+    PortalConfig-Index.cshtml
+    ================================
+    
+        ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+@model Camphorizon.Web.ViewModels.WebPortalConfigurationsViewModel
+<h2>Portal Configurations</h2>
+
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Web Portal Configuration</li>
+</ol>
+<div class="row">
+    <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
+        @using (Html.BeginForm("Index", "PortalConfigurations", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Support Email</label>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(m => m.HelpEmail, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Contact/Helpline Number</label>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(m => m.Contact, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Address</label>
+                    <div class="col-sm-8">
+                        @Html.TextAreaFor(m => m.Address, new { @class = "form-control", @rows = "5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-8">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Update</button>
+                    </div>
+                </div>
+            
+        }
+        
+    </div>
+</div>
+
+_AdminLayoutMaster.cshtml
+======================================
+
+<div class="row topMargin">
+        <div class="col-md-12">
+            <div class="col-md-3 rightBorder">
+
+                <h4 class="text-center text-capitalize text-info">Menu </h4>
+               
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="@Url.Action("Index","BookingRequests")">Booking Requests</a> </li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","Packages")">Packages</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","Slider")">Advertisements</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","Offers")">Testimonials</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","Gallery")">Gallery</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","PortalConfigurations")">Web Portal Configurations</a></li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Partial("_PartialAlerts")
+                    </div>
+                </div>
+                @RenderBody()
+            </div>
+        </div>
+</div>
+DBQueris.sql
+===================
+
+CREATE TABLE [dbo].[Packages]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[Name]	varchar(256),
+	[Description] nvarchar(max),
+	[Price] decimal(8,2),
+	[Active] bit,
+	[Duration] smallint,
+	[CreatedDate] datetime,
+	[UpdatedDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30)
+)
+
+CREATE TABLE [dbo].[PackageInclusions]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[PackageID] int,
+	[Inclusions] nvarchar(max),
+	[CreateDate] datetime,
+	[UpdateDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30), 
+    CONSTRAINT [FK_PackageInclusions_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+
+CREATE TABLE [dbo].[PackageExclusions]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[PackageID] int,
+	[Exclusions] nvarchar(max),
+	[CreateDate] datetime,
+	[UpdateDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30), 
+    CONSTRAINT [FK_PackageExclusions_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+
+
+CREATE TABLE [dbo].[PackageItinerary]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[PackageID] int,
+	[Itinerary] nvarchar(max),
+	[CreateDate] datetime,
+	[UpdateDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30), 
+	CONSTRAINT [FK_PackageItinerary_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+CREATE TABLE [dbo].[CancellationTerms]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [CancellationTerm] NVARCHAR(MAX) NULL
+)
+
+CREATE TABLE [dbo].[PackageCancellationTermsMappings]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[PackageID] int,
+	[CancellationTermID] int, 
+    CONSTRAINT [FK_PackageCancellationTermsMappings_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+
+)
+
+CREATE TABLE [dbo].[Facilities]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [Facility] NVARCHAR(200) NULL
+)
+
+CREATE TABLE [dbo].[PackageFacilityMapping]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+	[PackageID] int,
+	[FacilityID] int, 
+    CONSTRAINT [FK_PackageFacilityMapping_ToTable] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+CREATE TABLE [dbo].[ApplicationSettings]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[Type] varchar(50),
+	[Name] varchar(50),
+	[Value] varchar(1000)
+)
+Insert into ApplicationSettings
+values
+('Contact','Helpline','+91-8860795399')
+
+Insert into ApplicationSettings
+values
+('Contact','HelpEmail','info@camphorizon.com')
+Insert into ApplicationSettings
+values
+('Contact','Address','xyz, abc street, India')
+
+
+
+   
