@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿ <!DOCTYPE html>
 
 <html>
 <head>
@@ -17,8 +17,8 @@
   <div class="container-fluid ">
       <div class="row" style="float:right;">
           <div class="col-md-12">
-              <span class="label label-info"><i class="fa fa-phone"></i> @System.Configuration.ConfigurationManager.AppSettings["helpline"].ToString()</span>
-              <span class="label label-primary"><i class="fa fa-envelope"></i>  @System.Configuration.ConfigurationManager.AppSettings["emailhelp"].ToString()</span>
+              <span class="label label-info"><i class="fa fa-phone"></i> @ViewBag.Contact.ToString()</span>
+              <span class="label label-primary"><i class="fa fa-envelope"></i>  @ViewBag.HelpEmail.ToString()</span>
           </div>
          
       </div>
@@ -112,9 +112,9 @@
 				</div>
 				<div class="col-md-3 col-sm-6 contact-box">
 					<h4>CONTACT US</h4>
-					<p><i class="fa fa-home"></i> Street #123, DELHI/p>
-					<p><i class="fa fa-envelope-o"></i> email@domain.com</p>
-					<p><i class="fa fa-phone"></i> +91 8860795399</p>
+					<p><i class="fa fa-home"></i> @ViewBag.Address</p>
+					<p><i class="fa fa-envelope-o"></i> @ViewBag.HelpEmail</p>
+					<p><i class="fa fa-phone"></i> @ViewBag.Contact</p>
 					<p class="social-media">
 						<a href="#"><i class="fa fa-facebook"></i></a>
 						<a href="#"><i class="fa fa-twitter"></i></a>

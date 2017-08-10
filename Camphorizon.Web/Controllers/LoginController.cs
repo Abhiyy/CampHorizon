@@ -10,7 +10,7 @@ using System.Web.Security;
 namespace Camphorizon.Web.Controllers
 {
     [AllowAnonymous]
-    public class LoginController : Controller
+    public class LoginController : BaseController
     {
         //
         // GET: /Login/

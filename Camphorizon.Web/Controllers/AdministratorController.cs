@@ -7,7 +7,7 @@ using System.Web.Mvc;
 namespace Camphorizon.Web.Controllers
 {
     [Authorize]
-    public class AdministratorController : Controller
+    public class AdministratorController : BaseController
     {
         //
         // GET: /Administrator/

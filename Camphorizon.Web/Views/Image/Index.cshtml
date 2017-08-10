@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+@using GridMvc.Html
+@model List<Camphorizon.Web.ViewModels.ImageUploadViewModel>
+<h2>Uploaded Images</h2>
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Uploaded Images</li>
+</ol>
+<div class="row">
+    <div class="col-md-12">
+      
+        @Html.Grid(Model).Columns(columns =>
+{
+    columns.Add(data => data.ImageID).Titled("ID");
+    columns.Add(data => data.Name).Titled("Name");
+    columns.Add(data => data.Status).Titled("Status").Sortable(true);
+    columns.Add()
+        .Titled("Actions")
+        .Encoded(false)
+        .Sanitized(false)
+        .SetWidth(30)
+        .RenderValueAs(o => @<a href="@Url.Action("Edit", "Image", new { id = o.ImageID })" class="btn btn-info">Edit <i class="fa fa-edit"></i></a>);
+}).WithPaging(20)
+        <hr />
+        <a href="@Url.Action("Upload","Image")" class="btn btn-primary"><i class="fa fa-plus"></i> Add New Image </a>
+
+    </div>
+</div>

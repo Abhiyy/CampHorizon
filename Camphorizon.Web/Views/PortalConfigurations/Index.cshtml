@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+@model Camphorizon.Web.ViewModels.WebPortalConfigurationsViewModel
+<h2>Portal Configurations</h2>
+
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Web Portal Configuration</li>
+</ol>
+<div class="row">
+    <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
+        @using (Html.BeginForm("Index", "PortalConfigurations", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Support Email</label>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(m => m.HelpEmail, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Contact/Helpline Number</label>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(m => m.Contact, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Address</label>
+                    <div class="col-sm-8">
+                        @Html.TextAreaFor(m => m.Address, new { @class = "form-control", @rows = "5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-8">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Update</button>
+                    </div>
+                </div>
+            
+        }
+        
+    </div>
+</div>

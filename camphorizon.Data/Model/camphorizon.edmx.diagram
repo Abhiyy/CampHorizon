@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d0f6e1777a0247c79b4e7630fcf5fdb6" Name="Diagram1">
+        <EntityTypeShape EntityType="camphorizonModel.ApplicationSetting" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="camphorizonModel.CancellationTerm" Width="1.5" PointX="5.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="camphorizonModel.Facility" Width="1.5" PointX="5.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="camphorizonModel.ImagesCatalogue" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="camphorizonModel.PackageCancellationTermsMapping" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="camphorizonModel.PackageExclusion" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="camphorizonModel.PackageFacilityMapping" Width="1.5" PointX="3" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="camphorizonModel.PackageInclusion" Width="1.5" PointX="3" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="camphorizonModel.PackageItinerary" Width="1.5" PointX="3" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="camphorizonModel.Package" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <AssociationConnector Association="camphorizonModel.FK_PackageCancellationTermsMappings_Packages" ManuallyRouted="false" />
+        <AssociationConnector Association="camphorizonModel.FK_PackageExclusions_Packages" ManuallyRouted="false" />
+        <AssociationConnector Association="camphorizonModel.FK_PackageFacilityMapping_ToTable" ManuallyRouted="false" />
+        <AssociationConnector Association="camphorizonModel.FK_PackageInclusions_Packages" ManuallyRouted="false" />
+        <AssociationConnector Association="camphorizonModel.FK_PackageItinerary_Packages" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

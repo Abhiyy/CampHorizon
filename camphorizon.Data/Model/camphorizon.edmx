@@ -1,0 +1,557 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="camphorizonModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="camphorizonModelStoreContainer">
+          <EntitySet Name="ApplicationSettings" EntityType="camphorizonModel.Store.ApplicationSettings" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CancellationTerms" EntityType="camphorizonModel.Store.CancellationTerms" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Facilities" EntityType="camphorizonModel.Store.Facilities" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ImagesCatalogue" EntityType="camphorizonModel.Store.ImagesCatalogue" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="PackageCancellationTermsMappings" EntityType="camphorizonModel.Store.PackageCancellationTermsMappings" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="PackageExclusions" EntityType="camphorizonModel.Store.PackageExclusions" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="PackageFacilityMapping" EntityType="camphorizonModel.Store.PackageFacilityMapping" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="PackageInclusions" EntityType="camphorizonModel.Store.PackageInclusions" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="PackageItinerary" EntityType="camphorizonModel.Store.PackageItinerary" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Packages" EntityType="camphorizonModel.Store.Packages" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_PackageCancellationTermsMappings_Packages" Association="camphorizonModel.Store.FK_PackageCancellationTermsMappings_Packages">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageCancellationTermsMappings" EntitySet="PackageCancellationTermsMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PackageExclusions_Packages" Association="camphorizonModel.Store.FK_PackageExclusions_Packages">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageExclusions" EntitySet="PackageExclusions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PackageFacilityMapping_ToTable" Association="camphorizonModel.Store.FK_PackageFacilityMapping_ToTable">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageFacilityMapping" EntitySet="PackageFacilityMapping" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PackageInclusions_Packages" Association="camphorizonModel.Store.FK_PackageInclusions_Packages">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageInclusions" EntitySet="PackageInclusions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PackageItinerary_Packages" Association="camphorizonModel.Store.FK_PackageItinerary_Packages">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageItinerary" EntitySet="PackageItinerary" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ApplicationSettings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="varchar" MaxLength="50" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="Value" Type="varchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="CancellationTerms">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CancellationTerm" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Facilities">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Facility" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="ImagesCatalogue">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="OfferHeading" Type="varchar" MaxLength="200" />
+          <Property Name="OfferDetails" Type="varchar" MaxLength="200" />
+          <Property Name="ImageLink" Type="varchar" MaxLength="256" />
+          <Property Name="ImageFor" Type="smallint" />
+          <Property Name="PackageID" Type="int" />
+          <Property Name="SlideOrder" Type="smallint" />
+          <Property Name="Active" Type="bit" />
+        </EntityType>
+        <EntityType Name="PackageCancellationTermsMappings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="int" />
+          <Property Name="CancellationTermID" Type="int" />
+        </EntityType>
+        <EntityType Name="PackageExclusions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="int" />
+          <Property Name="Exclusions" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="30" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="PackageFacilityMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="int" />
+          <Property Name="FacilityID" Type="int" />
+        </EntityType>
+        <EntityType Name="PackageInclusions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="int" />
+          <Property Name="Inclusions" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="30" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="PackageItinerary">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="int" />
+          <Property Name="Itinerary" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="30" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="Packages">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="varchar" MaxLength="256" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Price" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="Active" Type="bit" />
+          <Property Name="Duration" Type="smallint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="30" />
+          <Property Name="UpdatedBy" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <Association Name="FK_PackageCancellationTermsMappings_Packages">
+          <End Role="Packages" Type="camphorizonModel.Store.Packages" Multiplicity="0..1" />
+          <End Role="PackageCancellationTermsMappings" Type="camphorizonModel.Store.PackageCancellationTermsMappings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageCancellationTermsMappings">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PackageExclusions_Packages">
+          <End Role="Packages" Type="camphorizonModel.Store.Packages" Multiplicity="0..1" />
+          <End Role="PackageExclusions" Type="camphorizonModel.Store.PackageExclusions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageExclusions">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PackageFacilityMapping_ToTable">
+          <End Role="Packages" Type="camphorizonModel.Store.Packages" Multiplicity="0..1" />
+          <End Role="PackageFacilityMapping" Type="camphorizonModel.Store.PackageFacilityMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageFacilityMapping">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PackageInclusions_Packages">
+          <End Role="Packages" Type="camphorizonModel.Store.Packages" Multiplicity="0..1" />
+          <End Role="PackageInclusions" Type="camphorizonModel.Store.PackageInclusions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageInclusions">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PackageItinerary_Packages">
+          <End Role="Packages" Type="camphorizonModel.Store.Packages" Multiplicity="0..1" />
+          <End Role="PackageItinerary" Type="camphorizonModel.Store.PackageItinerary" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageItinerary">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="camphorizonModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="camphorizonEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="ApplicationSettings" EntityType="camphorizonModel.ApplicationSetting" />
+          <EntitySet Name="CancellationTerms" EntityType="camphorizonModel.CancellationTerm" />
+          <EntitySet Name="Facilities" EntityType="camphorizonModel.Facility" />
+          <EntitySet Name="ImagesCatalogues" EntityType="camphorizonModel.ImagesCatalogue" />
+          <EntitySet Name="PackageCancellationTermsMappings" EntityType="camphorizonModel.PackageCancellationTermsMapping" />
+          <EntitySet Name="PackageExclusions" EntityType="camphorizonModel.PackageExclusion" />
+          <EntitySet Name="PackageFacilityMappings" EntityType="camphorizonModel.PackageFacilityMapping" />
+          <EntitySet Name="PackageInclusions" EntityType="camphorizonModel.PackageInclusion" />
+          <EntitySet Name="PackageItineraries" EntityType="camphorizonModel.PackageItinerary" />
+          <EntitySet Name="Packages" EntityType="camphorizonModel.Package" />
+          <AssociationSet Name="FK_PackageCancellationTermsMappings_Packages" Association="camphorizonModel.FK_PackageCancellationTermsMappings_Packages">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageCancellationTermsMappings" EntitySet="PackageCancellationTermsMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PackageExclusions_Packages" Association="camphorizonModel.FK_PackageExclusions_Packages">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageExclusions" EntitySet="PackageExclusions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PackageFacilityMapping_ToTable" Association="camphorizonModel.FK_PackageFacilityMapping_ToTable">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageFacilityMapping" EntitySet="PackageFacilityMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PackageInclusions_Packages" Association="camphorizonModel.FK_PackageInclusions_Packages">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageInclusions" EntitySet="PackageInclusions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PackageItinerary_Packages" Association="camphorizonModel.FK_PackageItinerary_Packages">
+            <End Role="Packages" EntitySet="Packages" />
+            <End Role="PackageItinerary" EntitySet="PackageItineraries" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ApplicationSetting">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="Name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="Value" Type="String" MaxLength="1000" Unicode="false" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="CancellationTerm">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="CancellationTerm1" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Facility">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Facility1" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="ImagesCatalogue">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+          <Property Name="OfferHeading" Type="String" MaxLength="200" Unicode="false" FixedLength="false" />
+          <Property Name="OfferDetails" Type="String" MaxLength="200" Unicode="false" FixedLength="false" />
+          <Property Name="ImageLink" Type="String" MaxLength="256" Unicode="false" FixedLength="false" />
+          <Property Name="ImageFor" Type="Int16" />
+          <Property Name="PackageID" Type="Int32" />
+          <Property Name="SlideOrder" Type="Int16" />
+          <Property Name="Active" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="PackageCancellationTermsMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="Int32" />
+          <Property Name="CancellationTermID" Type="Int32" />
+          <NavigationProperty Name="Package" Relationship="camphorizonModel.FK_PackageCancellationTermsMappings_Packages" FromRole="PackageCancellationTermsMappings" ToRole="Packages" />
+        </EntityType>
+        <EntityType Name="PackageExclusion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="Int32" />
+          <Property Name="Exclusions" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="Package" Relationship="camphorizonModel.FK_PackageExclusions_Packages" FromRole="PackageExclusions" ToRole="Packages" />
+        </EntityType>
+        <EntityType Name="PackageFacilityMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="Int32" />
+          <Property Name="FacilityID" Type="Int32" />
+          <NavigationProperty Name="Package" Relationship="camphorizonModel.FK_PackageFacilityMapping_ToTable" FromRole="PackageFacilityMapping" ToRole="Packages" />
+        </EntityType>
+        <EntityType Name="PackageInclusion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="Int32" />
+          <Property Name="Inclusions" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="Package" Relationship="camphorizonModel.FK_PackageInclusions_Packages" FromRole="PackageInclusions" ToRole="Packages" />
+        </EntityType>
+        <EntityType Name="PackageItinerary">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="PackageID" Type="Int32" />
+          <Property Name="Itinerary" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="Package" Relationship="camphorizonModel.FK_PackageItinerary_Packages" FromRole="PackageItinerary" ToRole="Packages" />
+        </EntityType>
+        <EntityType Name="Package">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="256" Unicode="false" FixedLength="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Price" Type="Decimal" Precision="8" Scale="2" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="Duration" Type="Int16" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="30" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="PackageCancellationTermsMappings" Relationship="camphorizonModel.FK_PackageCancellationTermsMappings_Packages" FromRole="Packages" ToRole="PackageCancellationTermsMappings" />
+          <NavigationProperty Name="PackageExclusions" Relationship="camphorizonModel.FK_PackageExclusions_Packages" FromRole="Packages" ToRole="PackageExclusions" />
+          <NavigationProperty Name="PackageFacilityMappings" Relationship="camphorizonModel.FK_PackageFacilityMapping_ToTable" FromRole="Packages" ToRole="PackageFacilityMapping" />
+          <NavigationProperty Name="PackageInclusions" Relationship="camphorizonModel.FK_PackageInclusions_Packages" FromRole="Packages" ToRole="PackageInclusions" />
+          <NavigationProperty Name="PackageItineraries" Relationship="camphorizonModel.FK_PackageItinerary_Packages" FromRole="Packages" ToRole="PackageItinerary" />
+        </EntityType>
+        <Association Name="FK_PackageCancellationTermsMappings_Packages">
+          <End Role="Packages" Type="camphorizonModel.Package" Multiplicity="0..1" />
+          <End Role="PackageCancellationTermsMappings" Type="camphorizonModel.PackageCancellationTermsMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageCancellationTermsMappings">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PackageExclusions_Packages">
+          <End Role="Packages" Type="camphorizonModel.Package" Multiplicity="0..1" />
+          <End Role="PackageExclusions" Type="camphorizonModel.PackageExclusion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageExclusions">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PackageFacilityMapping_ToTable">
+          <End Role="Packages" Type="camphorizonModel.Package" Multiplicity="0..1" />
+          <End Role="PackageFacilityMapping" Type="camphorizonModel.PackageFacilityMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageFacilityMapping">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PackageInclusions_Packages">
+          <End Role="Packages" Type="camphorizonModel.Package" Multiplicity="0..1" />
+          <End Role="PackageInclusions" Type="camphorizonModel.PackageInclusion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageInclusions">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PackageItinerary_Packages">
+          <End Role="Packages" Type="camphorizonModel.Package" Multiplicity="0..1" />
+          <End Role="PackageItinerary" Type="camphorizonModel.PackageItinerary" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Packages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PackageItinerary">
+              <PropertyRef Name="PackageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="camphorizonModelStoreContainer" CdmEntityContainer="camphorizonEntities">
+          <EntitySetMapping Name="ApplicationSettings">
+            <EntityTypeMapping TypeName="camphorizonModel.ApplicationSetting">
+              <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CancellationTerms">
+            <EntityTypeMapping TypeName="camphorizonModel.CancellationTerm">
+              <MappingFragment StoreEntitySet="CancellationTerms">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CancellationTerm1" ColumnName="CancellationTerm" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Facilities">
+            <EntityTypeMapping TypeName="camphorizonModel.Facility">
+              <MappingFragment StoreEntitySet="Facilities">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Facility1" ColumnName="Facility" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImagesCatalogues">
+            <EntityTypeMapping TypeName="camphorizonModel.ImagesCatalogue">
+              <MappingFragment StoreEntitySet="ImagesCatalogue">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OfferHeading" ColumnName="OfferHeading" />
+                <ScalarProperty Name="OfferDetails" ColumnName="OfferDetails" />
+                <ScalarProperty Name="ImageLink" ColumnName="ImageLink" />
+                <ScalarProperty Name="ImageFor" ColumnName="ImageFor" />
+                <ScalarProperty Name="PackageID" ColumnName="PackageID" />
+                <ScalarProperty Name="SlideOrder" ColumnName="SlideOrder" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PackageCancellationTermsMappings">
+            <EntityTypeMapping TypeName="camphorizonModel.PackageCancellationTermsMapping">
+              <MappingFragment StoreEntitySet="PackageCancellationTermsMappings">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PackageID" ColumnName="PackageID" />
+                <ScalarProperty Name="CancellationTermID" ColumnName="CancellationTermID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PackageExclusions">
+            <EntityTypeMapping TypeName="camphorizonModel.PackageExclusion">
+              <MappingFragment StoreEntitySet="PackageExclusions">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PackageID" ColumnName="PackageID" />
+                <ScalarProperty Name="Exclusions" ColumnName="Exclusions" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PackageFacilityMappings">
+            <EntityTypeMapping TypeName="camphorizonModel.PackageFacilityMapping">
+              <MappingFragment StoreEntitySet="PackageFacilityMapping">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PackageID" ColumnName="PackageID" />
+                <ScalarProperty Name="FacilityID" ColumnName="FacilityID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PackageInclusions">
+            <EntityTypeMapping TypeName="camphorizonModel.PackageInclusion">
+              <MappingFragment StoreEntitySet="PackageInclusions">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PackageID" ColumnName="PackageID" />
+                <ScalarProperty Name="Inclusions" ColumnName="Inclusions" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PackageItineraries">
+            <EntityTypeMapping TypeName="camphorizonModel.PackageItinerary">
+              <MappingFragment StoreEntitySet="PackageItinerary">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PackageID" ColumnName="PackageID" />
+                <ScalarProperty Name="Itinerary" ColumnName="Itinerary" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Packages">
+            <EntityTypeMapping TypeName="camphorizonModel.Package">
+              <MappingFragment StoreEntitySet="Packages">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
