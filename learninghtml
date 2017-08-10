@@ -862,6 +862,557 @@ Insert into ApplicationSettings
 values
 ('Contact','Address','xyz, abc street, India')
 
+10-Aug-2017
+===================
+
+ImageController.cs
+-------------------------
+
+[Authorize]
+    public class ImageController : BaseController
+    {
+        //
+        // GET: /Images/
+        
+
+        public ActionResult Index()
+        {
+            _commonHelper = new Helpers.CommonHelper();
+            var lstImages = _commonHelper.GetUploadedImages();
+            return View(lstImages);
+        }
+
+        public ActionResult Upload()
+        {
+            var model = new ImageUploadViewModel();
+            _commonHelper = new Helpers.CommonHelper();
+            model.ImageTypes = _commonHelper.GetImageTypes();
+            _commonHelper = null;
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Upload(ImageUploadViewModel model)
+        {
+            
+            if (model.Images.Count() > 0)
+            {
+                _commonHelper = new Helpers.CommonHelper();
+                model.ImageTypes = _commonHelper.GetImageTypes();
+                if (_commonHelper.UploadImages(model) > 0)
+                {
+                    Success("The image(s) upload completed successfully.",true);
+                    return View(model);
+                }
+                else
+                {
+                    Danger("The image(s) can not be uploaded.", true);
+                }
+            }
+            else {
+                Danger("Please select a file(s) to upload.", true);
+            }
+            
+            return View(model);
+        }
 
 
+        
+        
+    }
+    
+    Image -Index.cshtml
+    ================================
+    
+    @{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+@using GridMvc.Html
+@model List<Camphorizon.Web.ViewModels.ImageUploadViewModel>
+<h2>Uploaded Images</h2>
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Uploaded Images</li>
+</ol>
+<div class="row">
+    <div class="col-md-12">
+      
+        @Html.Grid(Model).Columns(columns =>
+{
+    columns.Add(data => data.ImageID).Titled("ID");
+    columns.Add(data => data.Name).Titled("Name");
+    columns.Add(data => data.Status).Titled("Status").Sortable(true);
+    columns.Add()
+        .Titled("Actions")
+        .Encoded(false)
+        .Sanitized(false)
+        .SetWidth(30)
+        .RenderValueAs(o => @<a href="@Url.Action("Edit", "Image", new { id = o.ImageID })" class="btn btn-info">Edit <i class="fa fa-edit"></i></a>);
+}).WithPaging(20)
+        <hr />
+        <a href="@Url.Action("Upload","Image")" class="btn btn-primary"><i class="fa fa-plus"></i> Add New Image </a>
+
+    </div>
+</div>
+
+Image - Upload.cshtml
+=============================
+
+@{
+    ViewBag.Title = "Upload";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+@model Camphorizon.Web.ViewModels.ImageUploadViewModel
+<h2>Upload Images</h2>
+
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Upload Images</li>
+</ol>
+<div class="row">
+    <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
+        @using (Html.BeginForm("Upload", "Image", FormMethod.Post, new { @class = "form-horizontal" , @enctype = "multipart/form-data" }))
+        {
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Image Title</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Image For</label>
+                <div class="col-sm-8">
+                    @Html.DropDownListFor(m => m.ImageType,Model.ImageTypes, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Offer Display Text</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.OfferHeading, new { @class = "form-control" })
+                </div>
+            </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Offer Details</label>
+        <div class="col-sm-8">
+            @Html.TextBoxFor(m => m.OfferDetails, new { @class = "form-control"})
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Select Image(s)</label>
+        <div class="col-sm-8">
+            @Html.TextBoxFor(m => m.Images, new { @type = "file"})
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Active</label>
+        <div class="col-sm-8">
+            @Html.CheckBoxFor(m => m.Active)
+        </div>
+    </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-8">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button>
+                </div>
+            </div>
+
+        }
+
+        <hr />
+        <a href="@Url.Action("Index","Image")" class="btn btn-danger"><i class="fa fa-backward"></i> Back to queue</a>
+    </div>
+</div>
+
+CommonHelper.cs
+========================
+
+public class CommonHelper
+    {
+       public WebPortalConfigurationsViewModel GetHomeConfiguration()
+        {
+
+            using (camphorizonEntities db = new camphorizonEntities())
+            {
+
+                var config = db.ApplicationSettings.Where(c => c.Type == "Contact").ToList();
+                return new WebPortalConfigurationsViewModel()
+                {
+                    Address = config.Where(x => x.Name == "Address").FirstOrDefault().Value,
+                    Contact = config.Where(x => x.Name == "Helpline").FirstOrDefault().Value,
+                    HelpEmail = config.Where(x => x.Name == "HelpEmail").FirstOrDefault().Value
+                };
+            }
+
+        }
+
+       public bool UpdateHomeConfiguration(WebPortalConfigurationsViewModel model)
+       {
+           using (camphorizonEntities db = new camphorizonEntities())
+           {
+               var config = db.ApplicationSettings.Where(x => x.Name == "Address").FirstOrDefault();
+               config.Value = model.Address;
+               db.Entry(config).State = System.Data.Entity.EntityState.Modified;
+               db.SaveChanges();
+
+               config = db.ApplicationSettings.Where(x => x.Name == "Helpline").FirstOrDefault();
+               config.Value = model.Contact;
+               db.Entry(config).State = System.Data.Entity.EntityState.Modified;
+               db.SaveChanges();
+
+               config = db.ApplicationSettings.Where(x => x.Name == "HelpEmail").FirstOrDefault();
+               config.Value = model.HelpEmail;
+               db.Entry(config).State = System.Data.Entity.EntityState.Modified;
+               db.SaveChanges();
+
+               return true;
+           }
+
+           
+       }
+
+       public SelectList GetImageTypes()
+       {
+           using (camphorizonEntities db = new camphorizonEntities()) {
+
+               return new SelectList(db.ApplicationSettings.Where(x => x.Type == "ImageTypes" && x.Name != "Package").Select(x => new { ID = x.Value, Name = x.Name }).ToList(),"ID","Name");
+           }
+       
+       }
+
+       
+       public int UploadImages(ImageUploadViewModel model)
+       {
+           string uploadDirectory = ConfigurationManager.AppSettings["UploadDirectoryImages"].ToString();
+           using (camphorizonEntities db = new camphorizonEntities()) {
+               var order = db.ImagesCatalogues.Where(x => x.ImageFor == model.ImageType).Max(x => x.SlideOrder);
+               int lastOrder = order.HasValue ? order.Value : 0;
+               foreach (var img in model.Images)
+               {
+                   string uploadFileLink = UploadFile(img, uploadDirectory);
+                  lastOrder++;
+                   db.ImagesCatalogues.Add(new ImagesCatalogue()
+                   {
+                       Active = model.Active,
+                       ImageFor = model.ImageType,
+                       ImageLink = uploadFileLink,
+                       Name = model.Name,
+                       OfferDetails = model.OfferDetails,
+                       OfferHeading = model.OfferHeading,
+                       SlideOrder = (short)lastOrder
+                   });
+                  
+
+               }
+
+               return db.SaveChanges();
+           }
+       }
+
+       public string UploadFile(HttpPostedFileBase file, string uploadDirectory)
+       {
+           if (file.ContentLength > 0)
+           {
+               var fileName = Path.GetFileName(file.FileName);
+               string path = Path.Combine(HttpContext.Current.Server.MapPath(uploadDirectory), fileName);
+               file.SaveAs(path);
+               return uploadDirectory + "/" + fileName;
+           }
+
+           return string.Empty;
+       }
+
+       public List<ImageUploadViewModel> GetUploadedImages() {
+           using (camphorizonEntities db = new camphorizonEntities()) {
+               var lstImageIDs = db.ImagesCatalogues.Where(x => x.ImageFor.Value != 1 || x.ImageFor.Value != 4).Select(x=>x.Id).ToList();
+              List<ImageUploadViewModel> lstImages= new List<ImageUploadViewModel>();
+              foreach (var imgID in lstImageIDs)
+              {
+                  lstImages.Add(GetUploadedImage(imgID,db));   
+              }
+              return lstImages;
+           }
+       }
+
+       public ImageUploadViewModel GetUploadedImage(int id, camphorizonEntities db, bool isDetails = false)
+       {
+
+           return new ImageUploadViewModel(db.ImagesCatalogues.Where(x => x.Id == id).First(),isDetails);
+       
+       }
+    }
+    
+    ImageUploadViewModel.cs
+    ==============================
+    
+    public class ImageUploadViewModel
+    {
+        public int ImageID { get; set; }
+        public string Name { get; set; }
+        public string OfferHeading { get; set; }
+        public string OfferDetails { get; set; }
+        public short ImageType { get; set; }
+        public string ImageTypeName { get; set; }
+        public SelectList ImageTypes { get; set; }
+        public string Imagelink { get; set; }
+        public HttpPostedFileBase [] Images { get; set; }
+        public bool Active { get; set; }
+        public string Status { get; set; }
+        public int Order { get; set; }
+
+        public ImageUploadViewModel() { }
+
+        public ImageUploadViewModel(ImagesCatalogue model, bool isDetail =false)
+        {
+            this.ImageID = model.Id;
+            this.Name = model.Name;
+            this.Status = model.Active.Value?"Active":"Non-Active";
+            if(isDetail){
+                this.Order = (int)model.SlideOrder;
+                this.OfferHeading = model.OfferHeading;
+                this.OfferDetails = model.OfferDetails;
+                this.ImageTypeName = model.ImageFor == 1 ? "Package" : model.ImageFor == 2 ? "Slider" : model.ImageFor == 3 ? "Gallery" : "Room";
+                this.ImageType = (short) model.ImageFor;
+                this.Imagelink = model.ImageLink;
+                this.Active = model.Active.HasValue?model.Active.Value:false;
+            }
+            
+        }
+    }
+    
+    _AdminLayoutMaster.cshtml
+    ====================================
+    @{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+}
+
+    <div class="row topMargin">
+        <div class="col-md-12">
+            <div class="col-md-3 rightBorder">
+
+                <h4 class="text-center text-capitalize text-info">Menu </h4>
+               
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="@Url.Action("Index","BookingRequests")">Booking Requests</a> </li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","Packages")">Packages</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","Image")">Upload Images</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","Offers")">Testimonials</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","Gallery")">Gallery</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("Index","PortalConfigurations")">Web Portal Configurations</a></li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Partial("_PartialAlerts")
+                    </div>
+                </div>
+                @RenderBody()
+            </div>
+        </div>
+</div>
+
+web.config
+=====================
+
+ <add key="UploadDirectoryImages" value="~/Uploads/" />
+ 
+ DBQueries.sql
+ ========================
+ 
+ CREATE TABLE [dbo].[Packages]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[Name]	varchar(256),
+	[Description] nvarchar(max),
+	[Price] decimal(8,2),
+	[Active] bit,
+	[Duration] smallint,
+	[CreatedDate] datetime,
+	[UpdatedDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30)
+)
+
+CREATE TABLE [dbo].[PackageInclusions]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[PackageID] int,
+	[Inclusions] nvarchar(max),
+	[CreateDate] datetime,
+	[UpdateDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30), 
+    CONSTRAINT [FK_PackageInclusions_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+
+CREATE TABLE [dbo].[PackageExclusions]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[PackageID] int,
+	[Exclusions] nvarchar(max),
+	[CreateDate] datetime,
+	[UpdateDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30), 
+    CONSTRAINT [FK_PackageExclusions_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+
+
+CREATE TABLE [dbo].[PackageItinerary]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[PackageID] int,
+	[Itinerary] nvarchar(max),
+	[CreateDate] datetime,
+	[UpdateDate] datetime,
+	[CreatedBy] varchar(30),
+	[UpdatedBy] varchar(30), 
+	CONSTRAINT [FK_PackageItinerary_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+CREATE TABLE [dbo].[CancellationTerms]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [CancellationTerm] NVARCHAR(MAX) NULL
+)
+
+CREATE TABLE [dbo].[PackageCancellationTermsMappings]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[PackageID] int,
+	[CancellationTermID] int, 
+    CONSTRAINT [FK_PackageCancellationTermsMappings_Packages] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+
+)
+
+CREATE TABLE [dbo].[Facilities]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [Facility] NVARCHAR(200) NULL
+)
+
+CREATE TABLE [dbo].[PackageFacilityMapping]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1), 
+	[PackageID] int,
+	[FacilityID] int, 
+    CONSTRAINT [FK_PackageFacilityMapping_ToTable] FOREIGN KEY ([PackageID]) REFERENCES [Packages]([ID])
+)
+
+CREATE TABLE [dbo].[ApplicationSettings]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[Type] varchar(50),
+	[Name] varchar(50),
+	[Value] varchar(1000)
+)
+Insert into ApplicationSettings
+values
+('Contact','Helpline','+91-8860795399')
+
+Insert into ApplicationSettings
+values
+('Contact','HelpEmail','info@camphorizon.com')
+Insert into ApplicationSettings
+values
+('Contact','Address','xyz, abc street, India')
+
+
+CREATE TABLE [dbo].[ImagesCatalogue]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[Name] varchar(100),
+	[OfferHeading] varchar(200),
+	[OfferDetails] varchar(200),
+	[ImageLink] varchar(256),
+	[ImageFor] smallint,
+	[PackageID] int NULL,
+	[SlideOrder] smallint,
+	[Active] bit
+)
+
+
+Insert into ApplicationSettings
+values
+('ImageTypes','Package','1')
+
+Insert into ApplicationSettings
+values
+('ImageTypes','Slider','2')
+
+Insert into ApplicationSettings
+values
+('ImageTypes','Gallery','3')
+
+Insert into ApplicationSettings
+values
+('ImageTypes','Room','4')
+
+BaseController.cs
+=======================
+
+public class BaseController : Controller
+    {
+        //
+        // GET: /Base/
+        public camphorizonEntities db;
+        public CommonHelper _commonHelper;
+        public BaseController() {
+            db = new camphorizonEntities();
+            var contactDetails = db.ApplicationSettings.Where(x=>x.Type == "Contact").ToList();
+            ViewBag.Contact = contactDetails.Where(x => x.Name == "Helpline").FirstOrDefault().Value;
+            ViewBag.HelpEmail = contactDetails.Where(x => x.Name == "HelpEmail").FirstOrDefault().Value;
+            ViewBag.Address = contactDetails.Where(x => x.Name == "Address").FirstOrDefault().Value;
+            db = null;
+        }
+
+        public void Success(string message, bool dismissable = false)
+        {
+            AddAlert(AlertStyles.Success, message, dismissable);
+        }
+
+        public void Information(string message, bool dismissable = false)
+        {
+            AddAlert(AlertStyles.Information, message, dismissable);
+        }
+
+        public void Warning(string message, bool dismissable = false)
+        {
+            AddAlert(AlertStyles.Warning, message, dismissable);
+        }
+
+        public void Danger(string message, bool dismissable = false)
+        {
+            AddAlert(AlertStyles.Danger, message, dismissable);
+        }
+
+        private void AddAlert(string alertStyle, string message, bool dismissable)
+        {
+            var alerts = TempData.ContainsKey(Alert.TempDataKey)
+                ? (List<Alert>)TempData[Alert.TempDataKey]
+                : new List<Alert>();
+
+            alerts.Add(new Alert
+            {
+                AlertStyle = alertStyle,
+                Message = message,
+                Dismissable = dismissable
+            });
+
+            TempData[Alert.TempDataKey] = alerts;
+        }
+    }
+    
+
+
+
+    
    
