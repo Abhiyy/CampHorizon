@@ -1411,6 +1411,513 @@ public class BaseController : Controller
         }
     }
     
+11-Aug-2017
+===================
+PackageViewModel.cs
+=======-------------
+public class PackageViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public short Duration { get; set; }
+        public bool Active { get; set; }
+        public string Itinerary { get; set; }
+        public string Inclusions { get; set; }
+        public string Exclusions { get; set; }
+        public int PackageType { get; set; }
+        public SelectList PackageTypes { get; set; }
+    }
+    
+  Package-Create
+  ========================
+  
+  @{
+    ViewBag.Title = "Create Package";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+<link href="~/Content/kendo/2017.2.621/kendo.common.core.min.css" rel="stylesheet" />
+@*<link href="~/Content/kendo/2017.2.621/kendo.common.min.css" rel="stylesheet" />*@
+<link href="~/Content/kendo/2017.2.621/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2017.2.621/kendo.default.mobile.min.css" rel="stylesheet" />
+
+@*<script src="~/Scripts/kendo/2017.2.621/kendo.core.min.js"></script>*@
+<script src="~/Scripts/kendo/2017.2.621/kendo.ui.core.min.js"></script>
+@model Camphorizon.Web.ViewModels.PackageViewModel
+<h2>Create Package <i class="fa fa-suitcase"></i></h2>
+
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Create Packages/Rooms</li>
+</ol>
+<div class="row">
+    <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
+        @using (Html.BeginForm("Create", "Package", FormMethod.Post, new { @class = "form-horizontal"}))
+        {
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Name</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Type</label>
+                <div class="col-sm-8">
+                    @Html.DropDownListFor(m => m.PackageType, Model.PackageTypes, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Description</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Duration</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Duration, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Itinerary</label>
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(m => m.Itinerary)
+                </div>
+            </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Inclusions</label>
+        <div class="col-sm-8">
+            @Html.TextAreaFor(m => m.Inclusions, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Exclusions</label>
+        <div class="col-sm-8">
+            @Html.TextAreaFor(m => m.Exclusions, new { @class = "form-control" })
+        </div>
+    </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Active</label>
+                <div class="col-sm-8">
+                    @Html.CheckBoxFor(m => m.Active)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-8">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button>
+                </div>
+            </div>
+
+        }
+
+        <hr />
+        <a href="@Url.Action("Index","Image")" class="btn btn-danger"><i class="fa fa-backward"></i> Back to queue</a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // create Editor from textarea HTML element with default set of tools
+        $("#Itinerary").kendoEditor({
+            resizable: {
+                content: true,
+                toolbar: true
+            }
+        });
+    });
+</script>
+
+PackageController.cs
+=============================
+[Authorize]
+    public class PackagesController : BaseController
+    {
+        //
+        // GET: /Packages/
+
+        public ActionResult Index()
+        {
+            
+            return View();
+        }
+
+        public ActionResult Create()
+        {
+            _commonHelper = new CommonHelper();
+            var model = new PackageViewModel();
+            model.PackageTypes = _commonHelper.GetPackageTypes();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Create(PackageViewModel model) {
+
+            return View();
+        }
+    }
+    
+    
+    CommonHelper.cs
+    =======================
+    
+       public SelectList GetPackageTypes()
+       {
+           using (camphorizonEntities db = new camphorizonEntities())
+           {
+
+               return new SelectList(db.ApplicationSettings.Where(x => x.Type == "PackageType").Select(x => new { ID = x.Value, Name = x.Name }).ToList(), "ID", "Name");
+           }
+       
+       }
+       
+Package -Index
+================
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+
+<h2>Index</h2>
+
+<a href="@Url.Action("Create","Packages")" class="btn btn-primary"><i class="fa fa-plus"></i> Add New Package/Room </a>
+
+DBQueries.sql
+================
+Insert into ApplicationSettings values
+('PackageType','Tour Package','1')
+Insert into ApplicationSettings values
+('PackageType','Room Package','2')
+
+_PartialHomeSlider.cshtml
+============================
+@{
+    
+    int count = 0;
+    int slide = 0;
+}
+@if (ViewBag.SliderImages != null)
+{
+   
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+         <!-- Indicators -->
+        <ol class="carousel-indicators">
+            @foreach (var img in ViewBag.SliderImages)
+            {
+
+                <li data-target="#myCarousel" data-slide-to="@count" class="active"></li>
+                count++;
+            }
+        </ol>
+
+
+        <!-- Wrapper for slides -->
+      
+        <div class="carousel-inner">
+@foreach (var img in ViewBag.SliderImages)
+{
+    if (slide == 0)
+    {       <div class="item active">
+        <img src="@Url.Content(img.ImageLink)" style="width:100%; height:650px" />
+    </div>
+    }
+    else
+    {
+        <div class="item">
+            <img src="@Url.Content(img.ImageLink)" style="width:100%; height:650px" />
+        </div>
+    }
+
+    slide++;
+
+}
+        </div>
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+}
+
+
+Home - Index
+===================
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+}
+
+@Html.Partial("_PartialHomeSlider")
+<hr />
+  <div class="jumbotron jumbotronBack">
+  <h1>The Camp Horizon</h1>
+  <p>Welcome to our website. More text about camp horizon.</p>
+  <p><a  class="btn btn-primary btn-lg">Know more</a></p>
+</div>
+<hr />
+
+<div class="container-fluid">
+  <h1 class="text-center"> WE ARE OFFERING THE HOTTEST OFFERS</h1>
+  <div class="row">
+      <div class="col-md-3">
+         
+  <div class="well text-center">
+ <img src="~/Images/luxurytent.jpg" class ="img-responsive"  />
+      <h3 class="text-primary">Bag Packer</h3>
+     <h4> <i class="fa fa-inr"> </i> 5700 per person</h4> 
+      <a href="#" class="btn btn-default"> Explore <i class="fa fa-search"> </i></a>
+<a href="#" class="btn btn-primary">Ping Us <i class="fa fa-send"> </i></a>
+  </div>
+
+      </div>
+      <div class="col-md-3">
+          <div class="well text-center">
+ <img src="~/Images/luxurytent.jpg" class ="img-responsive"  />
+      <h3 class="text-primary">Standard</h3>
+     <h4> <i class="fa fa-inr"> </i> 5700 per person</h4> 
+      <a href="#" class="btn btn-default"> Explore <i class="fa fa-search"> </i></a>
+<a href="#" class="btn btn-primary">Ping Us <i class="fa fa-send"> </i></a>
+  </div>
+      </div>
+      <div class="col-md-3">
+          <div class="well text-center">
+ <img src="~/Images/luxurytent.jpg" class ="img-responsive"  />
+      <h3 class="text-primary">Deluxe</h3>
+     <h4> <i class="fa fa-inr"> </i> 5700 per person</h4> 
+      <a href="#" class="btn btn-default"> Explore <i class="fa fa-search"> </i></a>
+<a href="#" class="btn btn-primary">Ping Us <i class="fa fa-send"> </i></a>
+  </div>
+      </div>
+      <div class="col-md-3">
+          <div class="well text-center">
+ <img src="~/Images/luxurytent.jpg" class ="img-responsive"  />
+      <h3 class="text-primary">Luxury</h3>
+     <h4> <i class="fa fa-inr"> </i> 5700 per person</h4> 
+      <a href="#" class="btn btn-default"> Explore <i class="fa fa-search"> </i></a>
+<a href="#" class="btn btn-primary">Ping Us <i class="fa fa-send"> </i></a>
+  </div>
+      </div>
+  </div>
+      
+</div>
+
+<div id="facilities">
+    <div class="wrapper">
+        <h2 class="whiteColor text-center">OUR FACILITIES</h2>
+        <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-6" id="image1">
+             
+               <div class="container col-md-12">
+ 
+  <div class="content">
+   
+      <div class="content-overlay"></div>
+      <img class="content-image" src="~/Images/hotel-facility1.jpg" style="height:340px">
+      <div class="content-details fadeIn-bottom">
+        <h3 class="content-title">ADVENTURE ACTIVITIES</h3>
+        <p class="content-text">This is a short description</p>
+          <button class="btn btn-info">EXPLORE <i class="fa fa-search"></i> </button>
+      </div>
+  
+  </div>
+</div> 
+            </div>
+            <div class="col-md-6" id="image2">
+              
+               <div class="container col-md-12">
+ 
+  <div class="content">
+   
+      <div class="content-overlay"></div>
+      <img class="content-image" src="~/Images/hotel-facility2.jpg">
+      <div class="content-details fadeIn-bottom">
+        <h3 class="content-title">LEISURELY TIME</h3>
+        <p class="content-text">This is a short description</p>
+ <button class="btn btn-info">EXPLORE <i class="fa fa-search"></i> </button>
+      </div>
+  
+  </div>
+</div> 
+            </div>
+            </div>
+        <div class="col-md-10 col-md-offset-1" style="padding-top:10px">
+            <div class="col-md-6" id="image3">
+              
+               <div class="container col-md-12">
+ 
+  <div class="content">
+   
+      <div class="content-overlay"></div>
+      <img class="content-image" src="~/Images/hotel-facility3.jpg">
+      <div class="content-details fadeIn-bottom">
+        <h3 class="content-title">GREAT FOOD</h3>
+        <p class="content-text">This is a short description</p>
+           <button class="btn btn-info">EXPLORE <i class="fa fa-search"></i> </button>
+      </div>
+  
+  </div>
+</div> 
+            </div>
+            <div class="col-md-6" id="image4">
+              
+                           <div class="container col-md-12">
+ 
+              <div class="content">
+   
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="~/Images/hotel-facility4.jpg">
+                  <div class="content-details fadeIn-bottom">
+                    <h3 class="content-title">This is a title</h3>
+                    <p class="content-text">This is a short description</p>
+ <button class="btn btn-info">EXPLORE <i class="fa fa-search"></i> </button>
+                  </div>
+  
+              </div>
+            </div> 
+                        </div>
+           
+        </div>
+    </div>
+</div>
+<hr />
+   <div class="well-searchbox">
+                <form class="form-horizontal" role="form">
+                    <legend style="color:#fff">
+                       Make a reservation
+                    </legend>
+                    <div class="form-group has-feedback">
+                        <label class="col-md-4 control-label"> Check-in</label>
+                        <div class="col-md-8">
+                            <i class="fa fa-calendar form-control-feedback"></i>
+                            <input type="date" class="form-control " placeholder="">
+                            
+                        </div>
+                    </div>
+
+                   <div class="form-group has-feedback">
+                        <label class="col-md-4 control-label"> Check-out</label>
+                        <div class="col-md-8">
+                              <i class="fa fa-calendar form-control-feedback"></i>
+                            <input type="date" class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label class="col-md-4 control-label"> Adults</label>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label class="col-md-4 control-label"> Children</label>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-sm-offset-4 col-sm-5">
+                        <button type="submit" class="btn btn-success">Search <i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+<div class="container-fluid" id="testimonials">
+  <h1 class="text-center whiteColor"> HAPPY CUSTOMERS</h1>
+  
+     <div class="container">
+         <div class="col-md-4">
+  <img src="~/Images/customer.jpg" alt="Avatar" class="img-responsive" >
+             </div>
+         <div class="col-md-8">
+  <blockquote>
+  <p>
+    Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+    <br>
+    <em>– ABC Sharma</em>
+  </p>
+</blockquote>
+             </div>
+</div>
+
+<div class="container ">
+         <div class="col-md-4">
+  <img src="~/Images/customer.jpg" alt="Avatar" class="img-responsive" >
+             </div>
+         <div class="col-md-8">
+  <blockquote>
+  <p>
+    Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+    <br>
+    <em>– ABC Sharma</em>
+  </p>
+</blockquote>
+             </div>
+</div> 
+    <div class="row text-center" style="padding-top:10px">
+    <button class="btn btn-default " >MORE REVIEWS <i class="fa fa-thumbs-up"></i></button></div>
+</div>
+<hr />
+<section id="subscribe">
+	<div class="row hotel-subscribe-row">
+			<div class="container text-center">
+				<div class="section-title">
+					<h2>GET IN TOUCH</h2>
+					<h4>SUBSCRIBE</h4>
+					<div class="space"></div>
+					<p>
+						Subscribe to our news letter.
+					</p>
+				</div>
+				<div class="col-md-8 col-md-offset-2 subscribe-box">
+					<form>
+						<div class="col-md-11 col-sm-11 col-xs-10 clear-padding">
+							<input type="email" class="form-control" required="" name="email" placeholder="Enter Your Email to Subscribe">
+						</div>
+						<div class="col-md-1 col-sm-1 col-xs-2 clear-padding">
+							<button type="submit" class="subscribe-btn btn"><i class="fa fa-paper-plane"></i></button>
+						</div>
+					</form>
+				</div>
+			</div>
+	</div>
+</section>
+
+HomeController.cs
+===================
+
+  public ActionResult Index()
+        {
+            CreateViewBag();
+            return View();
+        }
+
+        void CreateViewBag()
+        { 
+            _commonHelper =new CommonHelper();
+            ViewBag.SliderImages = _commonHelper.GetImages(CommonHelper.ImageType.Slider);
+            _commonHelper = null;
+        }
+	
+        
+       
+
 
 
 
