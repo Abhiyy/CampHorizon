@@ -1917,7 +1917,211 @@ HomeController.cs
 	
         
        
+16-Aug-2017
+=========================
 
+PackagesController.cs
+-------------------------
+
+ [HttpPost]
+        public ActionResult Create(PackageViewModel model) {
+
+            _commonHelper = new CommonHelper();
+            if (_commonHelper.CreatePackage(model, User.Identity.Name))
+                Success("The package has been created successfully.", true);
+            else
+                Danger("The package has been created successfully.", false);
+            model.PackageTypes = _commonHelper.GetPackageTypes();
+            _commonHelper = null;
+            return View(model);
+        }
+
+CommonHelper.cs
+----------------------------
+
+ public bool CreatePackage(PackageViewModel model, string user) {
+           bool isSave = false;
+           using (camphorizonEntities db = new camphorizonEntities()) {
+
+               var package = new Package() { Active = model.Active,
+                                             CreatedBy = user,
+                                             CreatedDate = DateTime.UtcNow,
+                                             Description = model.Description,
+                                             Duration = model.Duration,
+                                             Name = model.Name,
+                                            Price = model.Price,
+                                            UpdatedBy = user,
+                                            UpdatedDate = DateTime.UtcNow
+               };
+
+               db.Packages.Add(package);
+
+               if (db.SaveChanges() > 0)
+               {
+                   isSave = true;
+               }
+               else {
+                   isSave = false;
+               }
+
+               db.PackageInclusions.Add(new PackageInclusion()
+               {
+                   CreateDate = DateTime.UtcNow,
+                   CreatedBy = user,
+                   Inclusions = model.Inclusions,
+                   PackageID = package.Id,
+                   UpdateDate = DateTime.UtcNow,
+                   UpdatedBy = user
+               });
+
+               db.PackageItineraries.Add(new PackageItinerary()
+               {
+                   CreateDate = DateTime.UtcNow,
+                   CreatedBy = user,
+                   Itinerary = model.Itinerary,
+                   PackageID = package.Id,
+                   UpdateDate = DateTime.UtcNow,
+                   UpdatedBy = user
+               });
+
+               db.PackageExclusions.Add(new PackageExclusion()
+               {
+                   CreateDate = DateTime.UtcNow,
+                   CreatedBy = user,
+                   Exclusions = model.Exclusions,
+                   PackageID = package.Id,
+                   UpdateDate = DateTime.UtcNow,
+                   UpdatedBy = user
+               });
+
+               if (db.SaveChanges() > 0)
+                   isSave = true;
+               else
+                   isSave = false;
+           }
+           return isSave;
+       }
+       
+    Packages - Create.cshtml
+    ---------------------------
+    
+    @{
+    ViewBag.Title = "Create Package";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+
+<link href="~/Content/kendo/2017.2.621/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2017.2.621/kendo.default.min.css" rel="stylesheet" />
+
+<script src="http://kendo.cdn.telerik.com/2017.1.118/js/kendo.all.min.js"></script>
+@model Camphorizon.Web.ViewModels.PackageViewModel
+<h2>Create Package <i class="fa fa-suitcase"></i></h2>
+
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Create Packages/Rooms</li>
+</ol>
+<div class="row">
+    <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
+        @using (Html.BeginForm("Create", "Packages", FormMethod.Post, new { @class = "form-horizontal"}))
+        {
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Name</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Type</label>
+                <div class="col-sm-8">
+                    @Html.DropDownListFor(m => m.PackageType, Model.PackageTypes, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Description</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Duration</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Duration, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Price(INR)</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Itinerary</label>
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(m => m.Itinerary)
+                </div>
+            </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Inclusions</label>
+        <div class="col-sm-8">
+            @Html.TextAreaFor(m => m.Inclusions, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Exclusions</label>
+        <div class="col-sm-8">
+            @Html.TextAreaFor(m => m.Exclusions, new { @class = "form-control" })
+        </div>
+    </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Active</label>
+                <div class="col-sm-8">
+                    @Html.CheckBoxFor(m => m.Active)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-8">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button>
+                </div>
+            </div>
+
+        }
+
+        <hr />
+        <a href="@Url.Action("Index","Image")" class="btn btn-danger"><i class="fa fa-backward"></i> Back to queue</a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // create Editor from textarea HTML element with default set of tools
+        $("#Itinerary").kendoEditor({
+            resizable: {
+                content: true,
+                toolbar: true
+            }
+        });
+        $("#Inclusions").kendoEditor({
+            resizable: {
+                content: true,
+                toolbar: true
+            }
+        });
+
+        $("#Exclusions").kendoEditor({
+            resizable: {
+                content: true,
+                toolbar: true
+            }
+        });
+    });
+</script>
+	
 
 
 
