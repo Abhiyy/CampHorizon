@@ -2121,9 +2121,143 @@ CommonHelper.cs
         });
     });
 </script>
-	
+
+18-Aug-2018
+=======================
+
+CommonHelper.cs
+-------------------
+
+  public List<PackageViewModel> GetPackages(bool isNonActiveIncluded=true){
+           using (camphorizonEntities db = new camphorizonEntities()) { 
+           List<int> packageIDs = null;
+
+           List<PackageViewModel> lstPackages = new List<PackageViewModel>();
+
+           if (isNonActiveIncluded)
+               packageIDs = db.Packages.Select(x => x.Id).ToList();
+           else
+               packageIDs = db.Packages.Where(x => x.Active == true).Select(x => x.Id).ToList();
+
+           foreach (var id in packageIDs)
+           {
+               lstPackages.Add(GetPackage(id, db));
+           }
+
+           return lstPackages;
+           }
+       }
+
+       public PackageViewModel GetPackage(int id, camphorizonEntities db)
+       {
+           var package = new PackageViewModel(db.Packages.Where(x => x.Id == id).FirstOrDefault(), false);
+
+           return package;
+       }
+       
+PackagesController.cs
+--------------------------
+
+ public ActionResult Index()
+        {
+            _commonHelper = new CommonHelper();
+            var packages = _commonHelper.GetPackages();
+            _commonHelper = null;
+            return View(packages);
+        }
 
 
+
+PackageViewModel.cs
+----------------------------
+
+
+ public class PackageViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public short Duration { get; set; }
+        public bool Active { get; set; }
+        public string Itinerary { get; set; }
+        public string Inclusions { get; set; }
+        public string Exclusions { get; set; }
+        public int PackageType { get; set; }
+        public string Package { get; set; }
+        public SelectList PackageTypes { get; set; }
+        public string Status { get; set; }
+
+        public PackageViewModel() { }
+
+        public PackageViewModel(Package model, bool isDesctiptive=true) {
+            this.Active = model.Active.Value;
+            this.Description = model.Description;
+            
+            if(isDesctiptive)
+            {
+            this.Exclusions = model.PackageExclusions.FirstOrDefault().Exclusions;
+            this.Inclusions = model.PackageInclusions.FirstOrDefault().Inclusions;
+            this.Itinerary = model.PackageItineraries.FirstOrDefault().Itinerary;
+            }
+
+            this.Duration = model.Duration.Value;
+            this.Id = model.Id;
+            this.Status = model.Active.Value ? "Active" : "Non-Active";
+            this.Name = model.Name;
+            this.Price = model.Price.Value;
+            
+        }
+    }
+    
+    Packages- Index.cshtml
+    ------------------------
+    
+    @{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+
+@using GridMvc.Html
+@model List<Camphorizon.Web.ViewModels.PackageViewModel>
+<h2>Uploaded Images</h2>
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Packages </li>
+</ol>
+<div class="row">
+    <div class="col-md-12">
+
+        @Html.Grid(Model).Columns(columns =>
+{
+    columns.Add(data => data.Id).Titled("ID");
+    columns.Add(data => data.Name).Titled("Name");
+    columns.Add()
+       .Titled("Status")
+       .Encoded(false)
+       .Sanitized(false)
+       .SetWidth(30)
+       .RenderValueAs(o => o.Active==true? @<label class="label label-success">Active</label>:@<label class="label label-success">Active</label>);
+    columns.Add(data => data.Duration).Titled("Duration (in Days)").Sortable(true);
+    columns.Add(data => data.Price).Titled("Price (INR)");
+    columns.Add()
+        .Titled("Actions")
+        .Encoded(false)
+        .Sanitized(false)
+        .SetWidth(30)
+        .RenderValueAs(o => @<a href="@Url.Action("Edit", "Packages", new { id = o.Id })" class="btn btn-info">Edit <i class="fa fa-edit"></i></a>);
+}).WithPaging(20)
+        <hr />
+        <a href="@Url.Action("Create","Packages")" class="btn btn-primary"><i class="fa fa-plus"></i> Add New Package/Room </a>
+
+    </div>
+</div>
+
+
+
+
+    
 
     
    
