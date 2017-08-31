@@ -35,5 +35,6 @@ namespace camphorizon.Data.Model
         public DbSet<PackageInclusion> PackageInclusions { get; set; }
         public DbSet<PackageItinerary> PackageItineraries { get; set; }
         public DbSet<Package> Packages { get; set; }
+        public DbSet<ReservationRequest> ReservationRequests { get; set; }
     }
 }

@@ -17,10 +17,13 @@ namespace Camphorizon.Web.Controllers
         public BaseController()
         {
             db = new camphorizonEntities();
-            var contactDetails = db.ApplicationSettings.Where(x => x.Type == "Contact").ToList();
-            ViewBag.Contact = contactDetails.Where(x => x.Name == "Helpline").FirstOrDefault().Value;
-            ViewBag.HelpEmail = contactDetails.Where(x => x.Name == "HelpEmail").FirstOrDefault().Value;
-            ViewBag.Address = contactDetails.Where(x => x.Name == "Address").FirstOrDefault().Value;
+            var homePageConfig = db.ApplicationSettings.Where(x => x.Type == "Contact" || x.Type=="HomePage").ToList();
+            ViewBag.Contact = homePageConfig.Where(x => x.Name == "Helpline").FirstOrDefault().Value;
+            ViewBag.HelpEmail = homePageConfig.Where(x => x.Name == "HelpEmail").FirstOrDefault().Value;
+            ViewBag.Address = homePageConfig.Where(x => x.Name == "Address").FirstOrDefault().Value;
+            
+            ViewBag.WebsiteName = homePageConfig.Where(x => x.Name == "WebsiteName").FirstOrDefault().Value;
+            ViewBag.WelcomeText = homePageConfig.Where(x => x.Name == "WelcomeText").FirstOrDefault().Value;
             db = null;
         }
 

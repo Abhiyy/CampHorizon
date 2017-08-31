@@ -24,3 +24,10 @@ D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\bin\System.Web.WebPages
 D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\obj\Release\Camphorizon.Web.csprojResolveAssemblyReference.cache
 D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\obj\Release\Camphorizon.Web.dll
 D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\obj\Release\Camphorizon.Web.pdb
+D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\bin\camphorizon.Data.dll
+D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\bin\EntityFramework.dll
+D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\bin\EntityFramework.SqlServer.dll
+D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\bin\GridMvc.dll
+D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\bin\camphorizon.Data.pdb
+D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\bin\EntityFramework.xml
+D:\My work\DA work\Repos\Camphorizon.Web\Camphorizon.Web\bin\EntityFramework.SqlServer.xml

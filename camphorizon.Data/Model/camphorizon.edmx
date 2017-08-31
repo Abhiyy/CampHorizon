@@ -16,6 +16,7 @@
           <EntitySet Name="PackageInclusions" EntityType="camphorizonModel.Store.PackageInclusions" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="PackageItinerary" EntityType="camphorizonModel.Store.PackageItinerary" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Packages" EntityType="camphorizonModel.Store.Packages" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ReservationRequests" EntityType="camphorizonModel.Store.ReservationRequests" store:Type="Tables" Schema="dbo" />
           <AssociationSet Name="FK_PackageCancellationTermsMappings_Packages" Association="camphorizonModel.Store.FK_PackageCancellationTermsMappings_Packages">
             <End Role="Packages" EntitySet="Packages" />
             <End Role="PackageCancellationTermsMappings" EntitySet="PackageCancellationTermsMappings" />
@@ -141,6 +142,20 @@
           <Property Name="CreatedBy" Type="varchar" MaxLength="30" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="30" />
         </EntityType>
+        <EntityType Name="ReservationRequests">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CheckInDate" Type="datetime" />
+          <Property Name="CheckOutDate" Type="datetime" />
+          <Property Name="ForDays" Type="int" />
+          <Property Name="Adults" Type="int" />
+          <Property Name="Children" Type="int" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="Contact" Type="varchar" MaxLength="20" />
+          <Property Name="DateCreated" Type="datetime" />
+        </EntityType>
         <Association Name="FK_PackageCancellationTermsMappings_Packages">
           <End Role="Packages" Type="camphorizonModel.Store.Packages" Multiplicity="0..1" />
           <End Role="PackageCancellationTermsMappings" Type="camphorizonModel.Store.PackageCancellationTermsMappings" Multiplicity="*" />
@@ -217,6 +232,7 @@
           <EntitySet Name="PackageInclusions" EntityType="camphorizonModel.PackageInclusion" />
           <EntitySet Name="PackageItineraries" EntityType="camphorizonModel.PackageItinerary" />
           <EntitySet Name="Packages" EntityType="camphorizonModel.Package" />
+          <EntitySet Name="ReservationRequests" EntityType="camphorizonModel.ReservationRequest" />
           <AssociationSet Name="FK_PackageCancellationTermsMappings_Packages" Association="camphorizonModel.FK_PackageCancellationTermsMappings_Packages">
             <End Role="Packages" EntitySet="Packages" />
             <End Role="PackageCancellationTermsMappings" EntitySet="PackageCancellationTermsMappings" />
@@ -351,6 +367,20 @@
           <NavigationProperty Name="PackageFacilityMappings" Relationship="camphorizonModel.FK_PackageFacilityMapping_ToTable" FromRole="Packages" ToRole="PackageFacilityMapping" />
           <NavigationProperty Name="PackageInclusions" Relationship="camphorizonModel.FK_PackageInclusions_Packages" FromRole="Packages" ToRole="PackageInclusions" />
           <NavigationProperty Name="PackageItineraries" Relationship="camphorizonModel.FK_PackageItinerary_Packages" FromRole="Packages" ToRole="PackageItinerary" />
+        </EntityType>
+        <EntityType Name="ReservationRequest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="CheckInDate" Type="DateTime" Precision="3" />
+          <Property Name="CheckOutDate" Type="DateTime" Precision="3" />
+          <Property Name="ForDays" Type="Int32" />
+          <Property Name="Adults" Type="Int32" />
+          <Property Name="Children" Type="Int32" />
+          <Property Name="Email" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="Contact" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="DateCreated" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_PackageCancellationTermsMappings_Packages">
           <End Role="Packages" Type="camphorizonModel.Package" Multiplicity="0..1" />
@@ -529,6 +559,21 @@
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReservationRequests">
+            <EntityTypeMapping TypeName="camphorizonModel.ReservationRequest">
+              <MappingFragment StoreEntitySet="ReservationRequests">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CheckInDate" ColumnName="CheckInDate" />
+                <ScalarProperty Name="CheckOutDate" ColumnName="CheckOutDate" />
+                <ScalarProperty Name="ForDays" ColumnName="ForDays" />
+                <ScalarProperty Name="Adults" ColumnName="Adults" />
+                <ScalarProperty Name="Children" ColumnName="Children" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Contact" ColumnName="Contact" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

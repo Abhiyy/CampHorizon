@@ -1,0 +1,10 @@
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Release\camphorizon.Data.dll.config
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Release\camphorizon.Data.dll
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Release\camphorizon.Data.pdb
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Release\EntityFramework.dll
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Release\EntityFramework.SqlServer.dll
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Release\EntityFramework.xml
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Release\EntityFramework.SqlServer.xml
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\obj\Release\camphorizon.Data.csprojResolveAssemblyReference.cache
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\obj\Release\camphorizon.Data.dll
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\obj\Release\camphorizon.Data.pdb

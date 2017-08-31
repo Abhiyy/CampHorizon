@@ -5,6 +5,6 @@ D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Debug\EntityFramew
 D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Debug\EntityFramework.SqlServer.dll
 D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Debug\EntityFramework.xml
 D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\bin\Debug\EntityFramework.SqlServer.xml
-D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\obj\Debug\camphorizon.Data.csprojResolveAssemblyReference.cache
 D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\obj\Debug\camphorizon.Data.dll
 D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\obj\Debug\camphorizon.Data.pdb
+D:\My work\DA work\Repos\Camphorizon.Web\camphorizon.Data\obj\Debug\camphorizon.Data.csprojResolveAssemblyReference.cache
