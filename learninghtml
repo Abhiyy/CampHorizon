@@ -2843,6 +2843,19 @@ GalleryController.cs
 
     }
     
+    31-Aug-2017
+    ====================
+    DBQueries.sql
+    -------------------
+    
+    Insert into ApplicationSettings
+values
+('HomePage','WelcomeText','Welcome to our website. More text about camp horizon.'),
+('HomePage','WebsiteName','The Camp Horizon')
+
+Insert into ApplicationSettings
+values
+('AboutPage','AboutText','')
     
 
 
