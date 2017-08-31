@@ -1411,8 +1411,1459 @@ public class BaseController : Controller
         }
     }
     
+11-Aug-2017
+===================
+PackageViewModel.cs
+=======-------------
+public class PackageViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public short Duration { get; set; }
+        public bool Active { get; set; }
+        public string Itinerary { get; set; }
+        public string Inclusions { get; set; }
+        public string Exclusions { get; set; }
+        public int PackageType { get; set; }
+        public SelectList PackageTypes { get; set; }
+    }
+    
+  Package-Create
+  ========================
+  
+  @{
+    ViewBag.Title = "Create Package";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+<link href="~/Content/kendo/2017.2.621/kendo.common.core.min.css" rel="stylesheet" />
+@*<link href="~/Content/kendo/2017.2.621/kendo.common.min.css" rel="stylesheet" />*@
+<link href="~/Content/kendo/2017.2.621/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2017.2.621/kendo.default.mobile.min.css" rel="stylesheet" />
+
+@*<script src="~/Scripts/kendo/2017.2.621/kendo.core.min.js"></script>*@
+<script src="~/Scripts/kendo/2017.2.621/kendo.ui.core.min.js"></script>
+@model Camphorizon.Web.ViewModels.PackageViewModel
+<h2>Create Package <i class="fa fa-suitcase"></i></h2>
+
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Create Packages/Rooms</li>
+</ol>
+<div class="row">
+    <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
+        @using (Html.BeginForm("Create", "Package", FormMethod.Post, new { @class = "form-horizontal"}))
+        {
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Name</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Type</label>
+                <div class="col-sm-8">
+                    @Html.DropDownListFor(m => m.PackageType, Model.PackageTypes, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Description</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Duration</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Duration, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Itinerary</label>
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(m => m.Itinerary)
+                </div>
+            </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Inclusions</label>
+        <div class="col-sm-8">
+            @Html.TextAreaFor(m => m.Inclusions, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Exclusions</label>
+        <div class="col-sm-8">
+            @Html.TextAreaFor(m => m.Exclusions, new { @class = "form-control" })
+        </div>
+    </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Active</label>
+                <div class="col-sm-8">
+                    @Html.CheckBoxFor(m => m.Active)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-8">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button>
+                </div>
+            </div>
+
+        }
+
+        <hr />
+        <a href="@Url.Action("Index","Image")" class="btn btn-danger"><i class="fa fa-backward"></i> Back to queue</a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // create Editor from textarea HTML element with default set of tools
+        $("#Itinerary").kendoEditor({
+            resizable: {
+                content: true,
+                toolbar: true
+            }
+        });
+    });
+</script>
+
+PackageController.cs
+=============================
+[Authorize]
+    public class PackagesController : BaseController
+    {
+        //
+        // GET: /Packages/
+
+        public ActionResult Index()
+        {
+            
+            return View();
+        }
+
+        public ActionResult Create()
+        {
+            _commonHelper = new CommonHelper();
+            var model = new PackageViewModel();
+            model.PackageTypes = _commonHelper.GetPackageTypes();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Create(PackageViewModel model) {
+
+            return View();
+        }
+    }
+    
+    
+    CommonHelper.cs
+    =======================
+    
+       public SelectList GetPackageTypes()
+       {
+           using (camphorizonEntities db = new camphorizonEntities())
+           {
+
+               return new SelectList(db.ApplicationSettings.Where(x => x.Type == "PackageType").Select(x => new { ID = x.Value, Name = x.Name }).ToList(), "ID", "Name");
+           }
+       
+       }
+       
+Package -Index
+================
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+
+<h2>Index</h2>
+
+<a href="@Url.Action("Create","Packages")" class="btn btn-primary"><i class="fa fa-plus"></i> Add New Package/Room </a>
+
+DBQueries.sql
+================
+Insert into ApplicationSettings values
+('PackageType','Tour Package','1')
+Insert into ApplicationSettings values
+('PackageType','Room Package','2')
+
+_PartialHomeSlider.cshtml
+============================
+@{
+    
+    int count = 0;
+    int slide = 0;
+}
+@if (ViewBag.SliderImages != null)
+{
+   
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+         <!-- Indicators -->
+        <ol class="carousel-indicators">
+            @foreach (var img in ViewBag.SliderImages)
+            {
+
+                <li data-target="#myCarousel" data-slide-to="@count" class="active"></li>
+                count++;
+            }
+        </ol>
 
 
+        <!-- Wrapper for slides -->
+      
+        <div class="carousel-inner">
+@foreach (var img in ViewBag.SliderImages)
+{
+    if (slide == 0)
+    {       <div class="item active">
+        <img src="@Url.Content(img.ImageLink)" style="width:100%; height:650px" />
+    </div>
+    }
+    else
+    {
+        <div class="item">
+            <img src="@Url.Content(img.ImageLink)" style="width:100%; height:650px" />
+        </div>
+    }
+
+    slide++;
+
+}
+        </div>
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+}
+
+
+Home - Index
+===================
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+}
+
+@Html.Partial("_PartialHomeSlider")
+<hr />
+  <div class="jumbotron jumbotronBack">
+  <h1>The Camp Horizon</h1>
+  <p>Welcome to our website. More text about camp horizon.</p>
+  <p><a  class="btn btn-primary btn-lg">Know more</a></p>
+</div>
+<hr />
+
+<div class="container-fluid">
+  <h1 class="text-center"> WE ARE OFFERING THE HOTTEST OFFERS</h1>
+  <div class="row">
+      <div class="col-md-3">
+         
+  <div class="well text-center">
+ <img src="~/Images/luxurytent.jpg" class ="img-responsive"  />
+      <h3 class="text-primary">Bag Packer</h3>
+     <h4> <i class="fa fa-inr"> </i> 5700 per person</h4> 
+      <a href="#" class="btn btn-default"> Explore <i class="fa fa-search"> </i></a>
+<a href="#" class="btn btn-primary">Ping Us <i class="fa fa-send"> </i></a>
+  </div>
+
+      </div>
+      <div class="col-md-3">
+          <div class="well text-center">
+ <img src="~/Images/luxurytent.jpg" class ="img-responsive"  />
+      <h3 class="text-primary">Standard</h3>
+     <h4> <i class="fa fa-inr"> </i> 5700 per person</h4> 
+      <a href="#" class="btn btn-default"> Explore <i class="fa fa-search"> </i></a>
+<a href="#" class="btn btn-primary">Ping Us <i class="fa fa-send"> </i></a>
+  </div>
+      </div>
+      <div class="col-md-3">
+          <div class="well text-center">
+ <img src="~/Images/luxurytent.jpg" class ="img-responsive"  />
+      <h3 class="text-primary">Deluxe</h3>
+     <h4> <i class="fa fa-inr"> </i> 5700 per person</h4> 
+      <a href="#" class="btn btn-default"> Explore <i class="fa fa-search"> </i></a>
+<a href="#" class="btn btn-primary">Ping Us <i class="fa fa-send"> </i></a>
+  </div>
+      </div>
+      <div class="col-md-3">
+          <div class="well text-center">
+ <img src="~/Images/luxurytent.jpg" class ="img-responsive"  />
+      <h3 class="text-primary">Luxury</h3>
+     <h4> <i class="fa fa-inr"> </i> 5700 per person</h4> 
+      <a href="#" class="btn btn-default"> Explore <i class="fa fa-search"> </i></a>
+<a href="#" class="btn btn-primary">Ping Us <i class="fa fa-send"> </i></a>
+  </div>
+      </div>
+  </div>
+      
+</div>
+
+<div id="facilities">
+    <div class="wrapper">
+        <h2 class="whiteColor text-center">OUR FACILITIES</h2>
+        <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-6" id="image1">
+             
+               <div class="container col-md-12">
+ 
+  <div class="content">
+   
+      <div class="content-overlay"></div>
+      <img class="content-image" src="~/Images/hotel-facility1.jpg" style="height:340px">
+      <div class="content-details fadeIn-bottom">
+        <h3 class="content-title">ADVENTURE ACTIVITIES</h3>
+        <p class="content-text">This is a short description</p>
+          <button class="btn btn-info">EXPLORE <i class="fa fa-search"></i> </button>
+      </div>
+  
+  </div>
+</div> 
+            </div>
+            <div class="col-md-6" id="image2">
+              
+               <div class="container col-md-12">
+ 
+  <div class="content">
+   
+      <div class="content-overlay"></div>
+      <img class="content-image" src="~/Images/hotel-facility2.jpg">
+      <div class="content-details fadeIn-bottom">
+        <h3 class="content-title">LEISURELY TIME</h3>
+        <p class="content-text">This is a short description</p>
+ <button class="btn btn-info">EXPLORE <i class="fa fa-search"></i> </button>
+      </div>
+  
+  </div>
+</div> 
+            </div>
+            </div>
+        <div class="col-md-10 col-md-offset-1" style="padding-top:10px">
+            <div class="col-md-6" id="image3">
+              
+               <div class="container col-md-12">
+ 
+  <div class="content">
+   
+      <div class="content-overlay"></div>
+      <img class="content-image" src="~/Images/hotel-facility3.jpg">
+      <div class="content-details fadeIn-bottom">
+        <h3 class="content-title">GREAT FOOD</h3>
+        <p class="content-text">This is a short description</p>
+           <button class="btn btn-info">EXPLORE <i class="fa fa-search"></i> </button>
+      </div>
+  
+  </div>
+</div> 
+            </div>
+            <div class="col-md-6" id="image4">
+              
+                           <div class="container col-md-12">
+ 
+              <div class="content">
+   
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="~/Images/hotel-facility4.jpg">
+                  <div class="content-details fadeIn-bottom">
+                    <h3 class="content-title">This is a title</h3>
+                    <p class="content-text">This is a short description</p>
+ <button class="btn btn-info">EXPLORE <i class="fa fa-search"></i> </button>
+                  </div>
+  
+              </div>
+            </div> 
+                        </div>
+           
+        </div>
+    </div>
+</div>
+<hr />
+   <div class="well-searchbox">
+                <form class="form-horizontal" role="form">
+                    <legend style="color:#fff">
+                       Make a reservation
+                    </legend>
+                    <div class="form-group has-feedback">
+                        <label class="col-md-4 control-label"> Check-in</label>
+                        <div class="col-md-8">
+                            <i class="fa fa-calendar form-control-feedback"></i>
+                            <input type="date" class="form-control " placeholder="">
+                            
+                        </div>
+                    </div>
+
+                   <div class="form-group has-feedback">
+                        <label class="col-md-4 control-label"> Check-out</label>
+                        <div class="col-md-8">
+                              <i class="fa fa-calendar form-control-feedback"></i>
+                            <input type="date" class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label class="col-md-4 control-label"> Adults</label>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label class="col-md-4 control-label"> Children</label>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-sm-offset-4 col-sm-5">
+                        <button type="submit" class="btn btn-success">Search <i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+<div class="container-fluid" id="testimonials">
+  <h1 class="text-center whiteColor"> HAPPY CUSTOMERS</h1>
+  
+     <div class="container">
+         <div class="col-md-4">
+  <img src="~/Images/customer.jpg" alt="Avatar" class="img-responsive" >
+             </div>
+         <div class="col-md-8">
+  <blockquote>
+  <p>
+    Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+    <br>
+    <em>– ABC Sharma</em>
+  </p>
+</blockquote>
+             </div>
+</div>
+
+<div class="container ">
+         <div class="col-md-4">
+  <img src="~/Images/customer.jpg" alt="Avatar" class="img-responsive" >
+             </div>
+         <div class="col-md-8">
+  <blockquote>
+  <p>
+    Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text Testimonial text.
+    <br>
+    <em>– ABC Sharma</em>
+  </p>
+</blockquote>
+             </div>
+</div> 
+    <div class="row text-center" style="padding-top:10px">
+    <button class="btn btn-default " >MORE REVIEWS <i class="fa fa-thumbs-up"></i></button></div>
+</div>
+<hr />
+<section id="subscribe">
+	<div class="row hotel-subscribe-row">
+			<div class="container text-center">
+				<div class="section-title">
+					<h2>GET IN TOUCH</h2>
+					<h4>SUBSCRIBE</h4>
+					<div class="space"></div>
+					<p>
+						Subscribe to our news letter.
+					</p>
+				</div>
+				<div class="col-md-8 col-md-offset-2 subscribe-box">
+					<form>
+						<div class="col-md-11 col-sm-11 col-xs-10 clear-padding">
+							<input type="email" class="form-control" required="" name="email" placeholder="Enter Your Email to Subscribe">
+						</div>
+						<div class="col-md-1 col-sm-1 col-xs-2 clear-padding">
+							<button type="submit" class="subscribe-btn btn"><i class="fa fa-paper-plane"></i></button>
+						</div>
+					</form>
+				</div>
+			</div>
+	</div>
+</section>
+
+HomeController.cs
+===================
+
+  public ActionResult Index()
+        {
+            CreateViewBag();
+            return View();
+        }
+
+        void CreateViewBag()
+        { 
+            _commonHelper =new CommonHelper();
+            ViewBag.SliderImages = _commonHelper.GetImages(CommonHelper.ImageType.Slider);
+            _commonHelper = null;
+        }
+	
+        
+       
+16-Aug-2017
+=========================
+
+PackagesController.cs
+-------------------------
+
+ [HttpPost]
+        public ActionResult Create(PackageViewModel model) {
+
+            _commonHelper = new CommonHelper();
+            if (_commonHelper.CreatePackage(model, User.Identity.Name))
+                Success("The package has been created successfully.", true);
+            else
+                Danger("The package has been created successfully.", false);
+            model.PackageTypes = _commonHelper.GetPackageTypes();
+            _commonHelper = null;
+            return View(model);
+        }
+
+CommonHelper.cs
+----------------------------
+
+ public bool CreatePackage(PackageViewModel model, string user) {
+           bool isSave = false;
+           using (camphorizonEntities db = new camphorizonEntities()) {
+
+               var package = new Package() { Active = model.Active,
+                                             CreatedBy = user,
+                                             CreatedDate = DateTime.UtcNow,
+                                             Description = model.Description,
+                                             Duration = model.Duration,
+                                             Name = model.Name,
+                                            Price = model.Price,
+                                            UpdatedBy = user,
+                                            UpdatedDate = DateTime.UtcNow
+               };
+
+               db.Packages.Add(package);
+
+               if (db.SaveChanges() > 0)
+               {
+                   isSave = true;
+               }
+               else {
+                   isSave = false;
+               }
+
+               db.PackageInclusions.Add(new PackageInclusion()
+               {
+                   CreateDate = DateTime.UtcNow,
+                   CreatedBy = user,
+                   Inclusions = model.Inclusions,
+                   PackageID = package.Id,
+                   UpdateDate = DateTime.UtcNow,
+                   UpdatedBy = user
+               });
+
+               db.PackageItineraries.Add(new PackageItinerary()
+               {
+                   CreateDate = DateTime.UtcNow,
+                   CreatedBy = user,
+                   Itinerary = model.Itinerary,
+                   PackageID = package.Id,
+                   UpdateDate = DateTime.UtcNow,
+                   UpdatedBy = user
+               });
+
+               db.PackageExclusions.Add(new PackageExclusion()
+               {
+                   CreateDate = DateTime.UtcNow,
+                   CreatedBy = user,
+                   Exclusions = model.Exclusions,
+                   PackageID = package.Id,
+                   UpdateDate = DateTime.UtcNow,
+                   UpdatedBy = user
+               });
+
+               if (db.SaveChanges() > 0)
+                   isSave = true;
+               else
+                   isSave = false;
+           }
+           return isSave;
+       }
+       
+    Packages - Create.cshtml
+    ---------------------------
+    
+    @{
+    ViewBag.Title = "Create Package";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+
+<link href="~/Content/kendo/2017.2.621/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/2017.2.621/kendo.default.min.css" rel="stylesheet" />
+
+<script src="http://kendo.cdn.telerik.com/2017.1.118/js/kendo.all.min.js"></script>
+@model Camphorizon.Web.ViewModels.PackageViewModel
+<h2>Create Package <i class="fa fa-suitcase"></i></h2>
+
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Create Packages/Rooms</li>
+</ol>
+<div class="row">
+    <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
+        @using (Html.BeginForm("Create", "Packages", FormMethod.Post, new { @class = "form-horizontal"}))
+        {
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Name</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Type</label>
+                <div class="col-sm-8">
+                    @Html.DropDownListFor(m => m.PackageType, Model.PackageTypes, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Description</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Package Duration</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Duration, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Price(INR)</label>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Itinerary</label>
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(m => m.Itinerary)
+                </div>
+            </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Inclusions</label>
+        <div class="col-sm-8">
+            @Html.TextAreaFor(m => m.Inclusions, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Exclusions</label>
+        <div class="col-sm-8">
+            @Html.TextAreaFor(m => m.Exclusions, new { @class = "form-control" })
+        </div>
+    </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Active</label>
+                <div class="col-sm-8">
+                    @Html.CheckBoxFor(m => m.Active)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-8">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button>
+                </div>
+            </div>
+
+        }
+
+        <hr />
+        <a href="@Url.Action("Index","Image")" class="btn btn-danger"><i class="fa fa-backward"></i> Back to queue</a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // create Editor from textarea HTML element with default set of tools
+        $("#Itinerary").kendoEditor({
+            resizable: {
+                content: true,
+                toolbar: true
+            }
+        });
+        $("#Inclusions").kendoEditor({
+            resizable: {
+                content: true,
+                toolbar: true
+            }
+        });
+
+        $("#Exclusions").kendoEditor({
+            resizable: {
+                content: true,
+                toolbar: true
+            }
+        });
+    });
+</script>
+
+18-Aug-2018
+=======================
+
+CommonHelper.cs
+-------------------
+
+  public List<PackageViewModel> GetPackages(bool isNonActiveIncluded=true){
+           using (camphorizonEntities db = new camphorizonEntities()) { 
+           List<int> packageIDs = null;
+
+           List<PackageViewModel> lstPackages = new List<PackageViewModel>();
+
+           if (isNonActiveIncluded)
+               packageIDs = db.Packages.Select(x => x.Id).ToList();
+           else
+               packageIDs = db.Packages.Where(x => x.Active == true).Select(x => x.Id).ToList();
+
+           foreach (var id in packageIDs)
+           {
+               lstPackages.Add(GetPackage(id, db));
+           }
+
+           return lstPackages;
+           }
+       }
+
+       public PackageViewModel GetPackage(int id, camphorizonEntities db)
+       {
+           var package = new PackageViewModel(db.Packages.Where(x => x.Id == id).FirstOrDefault(), false);
+
+           return package;
+       }
+       
+PackagesController.cs
+--------------------------
+
+ public ActionResult Index()
+        {
+            _commonHelper = new CommonHelper();
+            var packages = _commonHelper.GetPackages();
+            _commonHelper = null;
+            return View(packages);
+        }
+
+
+
+PackageViewModel.cs
+----------------------------
+
+
+ public class PackageViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public short Duration { get; set; }
+        public bool Active { get; set; }
+        public string Itinerary { get; set; }
+        public string Inclusions { get; set; }
+        public string Exclusions { get; set; }
+        public int PackageType { get; set; }
+        public string Package { get; set; }
+        public SelectList PackageTypes { get; set; }
+        public string Status { get; set; }
+
+        public PackageViewModel() { }
+
+        public PackageViewModel(Package model, bool isDesctiptive=true) {
+            this.Active = model.Active.Value;
+            this.Description = model.Description;
+            
+            if(isDesctiptive)
+            {
+            this.Exclusions = model.PackageExclusions.FirstOrDefault().Exclusions;
+            this.Inclusions = model.PackageInclusions.FirstOrDefault().Inclusions;
+            this.Itinerary = model.PackageItineraries.FirstOrDefault().Itinerary;
+            }
+
+            this.Duration = model.Duration.Value;
+            this.Id = model.Id;
+            this.Status = model.Active.Value ? "Active" : "Non-Active";
+            this.Name = model.Name;
+            this.Price = model.Price.Value;
+            
+        }
+    }
+    
+    Packages- Index.cshtml
+    ------------------------
+    
+    @{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutMaster.cshtml";
+}
+
+@using GridMvc.Html
+@model List<Camphorizon.Web.ViewModels.PackageViewModel>
+<h2>Uploaded Images</h2>
+<hr />
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index","Administrator")">Home</a></li>
+    <li class="active">Packages </li>
+</ol>
+<div class="row">
+    <div class="col-md-12">
+
+        @Html.Grid(Model).Columns(columns =>
+{
+    columns.Add(data => data.Id).Titled("ID");
+    columns.Add(data => data.Name).Titled("Name");
+    columns.Add()
+       .Titled("Status")
+       .Encoded(false)
+       .Sanitized(false)
+       .SetWidth(30)
+       .RenderValueAs(o => o.Active==true? @<label class="label label-success">Active</label>:@<label class="label label-success">Active</label>);
+    columns.Add(data => data.Duration).Titled("Duration (in Days)").Sortable(true);
+    columns.Add(data => data.Price).Titled("Price (INR)");
+    columns.Add()
+        .Titled("Actions")
+        .Encoded(false)
+        .Sanitized(false)
+        .SetWidth(30)
+        .RenderValueAs(o => @<a href="@Url.Action("Edit", "Packages", new { id = o.Id })" class="btn btn-info">Edit <i class="fa fa-edit"></i></a>);
+}).WithPaging(20)
+        <hr />
+        <a href="@Url.Action("Create","Packages")" class="btn btn-primary"><i class="fa fa-plus"></i> Add New Package/Room </a>
+
+    </div>
+</div>
+
+30-Aug-2018
+------------------------------
+layoutmaster.cshtml
+========================
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/bootstrap.readable.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link href="~/Content/animate.min.css" rel="stylesheet" />
+</head>
+<body>
+    <header class="col-md-12 col-sm-12 col-lg-12">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid ">
+      <div class="row" style="float:right;">
+          <div class="col-md-12">
+              <span class="label label-info"><i class="fa fa-phone"></i> @ViewBag.Contact.ToString()</span>
+              <span class="label label-primary"><i class="fa fa-envelope"></i>  @ViewBag.HelpEmail.ToString()</span>
+          </div>
+         
+      </div>
+
+      <div class="row">
+          <div class="col-md-12">
+              <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#">
+                      @*<strong>The Camp Horizon</strong>*@
+                      <img src="~/Images/thecamphorizonlogo2.png" style="width:200px;margin-top:-20%" />
+                  </a>
+              </div>
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+                  <ul class="nav navbar-nav">
+                      <li><a href="#">About Us <span class="sr-only">(current)</span></a></li>
+
+                      <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <i class="fa fa-hotel"></i> Rooms<span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+                              <li><a href="#">Standard</a></li>
+                              <li><a href="#">Deluxe</a></li>
+
+                              <li class="divider"></li>
+                              <li><a href="#">Luxury</a></li>
+                          </ul>
+                      </li>
+                      <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-bicycle"></i> Activities <span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+                              <li><a href="#">Trekking</a></li>
+                              <li><a href="#">Nature Walk</a></li>
+                              <li><a href="#">Local Sightseeing</a></li>
+                          </ul>
+                      </li>
+                      @*  <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Explore <span class="caret"></span></a>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Mukteshwar</a></li>
+                        <li><a href="#">Binsar</a></li>
+                        <li><a href="#">Munsiyari</a></li>
+                      </ul>
+                    </li>*@
+                      <li><a href="@Url.Action("Index","Gallery")"><i class="fa fa-image"></i> Gallery</a></li>
+                  </ul>
+                  <form class="navbar-form navbar-left" role="search">
+                      <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Search for packages">
+                      </div>
+                      <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                  </form>
+                  <ul class="nav navbar-nav navbar-right ">
+                      @*<li><a href="#" class="btn btn-default">Call: <i class="fa fa-mobile"></i> +91-8860795399</a></li>*@
+                      @if(!User.Identity.IsAuthenticated)
+         {
+              <li><a href="@Url.Action("Index","Login")" class="btn btn-default"> <i class="fa fa-user"></i> Login</a></li>
+         }else{
+              <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user"></i> Hi, Admin <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                      <li><a href="#">My Profile</a></li>
+                      <li><a href="@Url.Action("Logout","Login")">Log out</a></li>
+
+                  </ul>
+              </li>
+         }
+                  </ul>
+              </div>
+              </div>
+          </div>
+  </div>
+</nav>
+    </header>
+    <div>
+        @RenderBody()
+    </div>
+    <hr />
+    <section id="footer">
+	<footer>
+		<div class="row sm-footer">
+			<div class="container clear-padding">
+				<div class="col-md-3 col-sm-6 footer-about-box">
+					<h4>THE CAMP HORIZON</h4>
+					<p>Some text.</p>
+					<a href="#">READ MORE</a>
+				</div>
+				<div class="col-md-3 col-sm-6 contact-box">
+					<h4>CONTACT US</h4>
+					<p><i class="fa fa-home"></i> @ViewBag.Address</p>
+					<p><i class="fa fa-envelope-o"></i> @ViewBag.HelpEmail</p>
+					<p><i class="fa fa-phone"></i> @ViewBag.Contact</p>
+					<p class="social-media">
+						<a href="#"><i class="fa fa-facebook"></i></a>
+						<a href="#"><i class="fa fa-twitter"></i></a>
+						<a href="#"><i class="fa fa-google-plus"></i></a>
+						<a href="#"><i class="fa fa-instagram"></i></a>
+					</p>
+				</div>
+				<div class="clearfix visible-sm-block"></div>
+				<div class="col-md-3 col-sm-6 footer-gallery">
+					<h4>GALLERY</h4>
+					<img src="../Images/camp1.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp2.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp3.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp1.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp2.jpg" alt="cruise" style="width:80px;height:60px">
+					<img src="../Images/camp3.jpg" alt="cruise" style="width:80px;height:60px">
+				</div>
+				<div class="col-md-3 col-sm-6 footer-subscribe">
+					<h4>SUBSCRIBE</h4>
+					<p>Don't miss any deal. Subscribe to get offers alerts.</p>
+					<form>
+						<div class="col-md-10 col-sm-10 col-xs-9 clear-padding">
+							<input type="email" required="" class="form-control" placeholder="Enter Your Email">
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-3 clear-padding">
+							<button type="submit"><i class="fa fa-paper-plane"></i></button>
+						</div>
+					</form>	
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<div class="row sm-footer-nav text-center">
+			<p>
+				<a href="#">HOME</a>
+				<a href="#">ROOM</a>
+				<a href="#">SERVICE</a>
+				<a href="#">GALLERY</a>
+			</p>
+			<p class="copyright">
+				<i class="fa fa-copyright"></i>	2017 THE CAMP HORIZON ALL RIGHTS RESERVED
+			</p>
+			<div class="go-up">
+				<a href="#"><i class="fa fa-arrow-up"></i></a>
+			</div>
+		</div>
+	</footer>
+</section>
+</body>
+</html>
+
+CommonHelper.cs
+===============================
+
+public List<ImagesCatalogue> GetImages(ImageType imgtype, int packageID = -1)
+       {
+           List<ImagesCatalogue> lstImages = new List<ImagesCatalogue>();
+           camphorizonEntities db = new camphorizonEntities();
+           switch (imgtype)
+           { 
+               case ImageType.Gallery:
+                    lstImages = db.ImagesCatalogues.Where(x => x.ImageFor == (short)ImageType.Gallery).OrderBy(x=>x.SlideOrder).ToList();
+                   
+                    break;
+           
+               case ImageType.Package:
+                    lstImages = db.ImagesCatalogues.Where(x =>x.ImageFor == (short)ImageType.Package && x.PackageID==packageID).ToList();
+                    break;
+
+               case ImageType.Room:
+                    lstImages = db.ImagesCatalogues.Where(x =>x.ImageFor == (short)ImageType.Room && x.PackageID == packageID).ToList();
+                    break;
+
+               case ImageType.Slider:
+                    lstImages = db.ImagesCatalogues.Where(x => x.ImageFor == (short)ImageType.Slider).OrderBy(x => x.SlideOrder).ToList();
+                    break;
+           }
+
+           return lstImages;
+       
+       }
+
+site.css
+===========================
+
+.gallery {
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  position: relative;
+  background: white;
+  width: 90%;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  border-radius: 5px;
+}
+.gallery input[name$="control"] {
+  display: none;
+}
+.gallery .carousel {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  position: relative;
+  height: 70vh;
+  width: 100%;
+}
+.gallery .wrap {
+  width: 100%;
+  height: 100%;
+  position: static;
+  margin: 0 auto;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  margin-right: 20px;
+}
+.gallery .wrap figure {
+  padding: 10px;
+  height: 100%;
+  min-width: 100%;
+  -webkit-transition: opacity 0.25s ease-in-out 0.05s;
+  transition: opacity 0.25s ease-in-out 0.05s;
+  position: relative;
+  left: 0;
+  -webkit-transform: translateX(0%);
+          transform: translateX(0%);
+  box-sizing: border-box;
+  text-align: center;
+  margin: 0;
+  display: block;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  opacity: 1;
+}
+.gallery .wrap figure label {
+  cursor: zoom-in;
+  height: auto;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: block;
+}
+.gallery .wrap figure img {
+  cursor: inherit;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 3px;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+}
+.gallery .thumbnails {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  min-width: 60px;
+  max-height: 100%;
+  height: auto;
+  -webkit-box-flex: 0;
+      -ms-flex-positive: 0;
+          flex-grow: 0;
+  -ms-flex-item-align: center;
+      align-self: center;
+  -ms-flex-preferred-size: auto;
+      flex-basis: auto;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  overflow-y: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding: 0 10px;
+  z-index: 20;
+}
+.gallery .thumbnails .thumb {
+  min-width: 60px;
+  height: 60px;
+  background-position: center center;
+  background-size: cover;
+  box-sizing: border-box;
+  opacity: 0.7;
+  margin: 5px 0;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  left: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  background-repeat: no-repeat;
+}
+.gallery .thumbnails .slider {
+  position: absolute;
+  display: block;
+  width: 5px;
+  height: calc(60px + 10px);
+  z-index: 2;
+  margin: 0;
+  left: 0;
+  -webkit-transition: all 0.33s cubic-bezier(0.3, 0, 0.33, 1);
+  transition: all 0.33s cubic-bezier(0.3, 0, 0.33, 1);
+}
+.gallery .thumbnails .slider .indicator {
+  width: 100%;
+  height: 30px;
+  max-height: calc(100% - 10px);
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  background: #428BFF;
+  border-radius: 1px;
+}
+.gallery input#fullscreen:checked ~ .wrap figure {
+  position: fixed;
+  z-index: 10;
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  top: 50%;
+  left: 50%;
+  z-index:9999;
+  -webkit-transform: translate(-50%, -50%) !important;
+          transform: translate(-50%, -50%) !important;
+  -webkit-animation-timing-function: ease-in-out;
+          animation-timing-function: ease-in-out;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+.gallery input#fullscreen:checked ~ .wrap figure label {
+  cursor: zoom-out;
+}
+.gallery input#fullscreen:checked ~ .wrap figure label img {
+  -webkit-animation: shadow 0.2s;
+          animation: shadow 0.2s;
+  -webkit-animation-timing-function: ease-in-out;
+          animation-timing-function: ease-in-out;
+  -webkit-animation-direction: forwards;
+          animation-direction: forwards;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+  border-radius: 0;
+}
+.gallery input#image1:checked ~ .wrap figure {
+  -webkit-transform: translateX(0);
+          transform: translateX(0);
+}
+.gallery input#image1:checked ~ .wrap figure:not(:nth-of-type(1)) {
+  opacity: 0;
+}
+.gallery input#image1:checked ~ .thumbnails .slider {
+  -webkit-transform: translateY(0);
+          transform: translateY(0);
+}
+.gallery input#image1:checked ~ .thumbnails .thumb:nth-of-type(1) {
+  opacity: 1;
+  cursor: default;
+}
+.gallery input#image2:checked ~ .wrap figure {
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+}
+.gallery input#image2:checked ~ .wrap figure:not(:nth-of-type(2)) {
+  opacity: 0;
+}
+.gallery input#image2:checked ~ .thumbnails .slider {
+  -webkit-transform: translateY(100%);
+          transform: translateY(100%);
+}
+.gallery input#image2:checked ~ .thumbnails .thumb:nth-of-type(2) {
+  opacity: 1;
+  cursor: default;
+}
+.gallery input#image3:checked ~ .wrap figure {
+  -webkit-transform: translateX(-200%);
+          transform: translateX(-200%);
+}
+.gallery input#image3:checked ~ .wrap figure:not(:nth-of-type(3)) {
+  opacity: 0;
+}
+.gallery input#image3:checked ~ .thumbnails .slider {
+  -webkit-transform: translateY(200%);
+          transform: translateY(200%);
+}
+.gallery input#image3:checked ~ .thumbnails .thumb:nth-of-type(3) {
+  opacity: 1;
+  cursor: default;
+}
+.gallery input#image4:checked ~ .wrap figure {
+  -webkit-transform: translateX(-300%);
+          transform: translateX(-300%);
+}
+.gallery input#image4:checked ~ .wrap figure:not(:nth-of-type(4)) {
+  opacity: 0;
+}
+.gallery input#image4:checked ~ .thumbnails .slider {
+  -webkit-transform: translateY(300%);
+          transform: translateY(300%);
+}
+.gallery input#image4:checked ~ .thumbnails .thumb:nth-of-type(4) {
+  opacity: 1;
+  cursor: default;
+}
+
+@-webkit-keyframes full {
+  from {
+    -webkit-transform: translate(-50%, -50%) scale(0.8);
+            transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    -webkit-transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes full {
+  from {
+    -webkit-transform: translate(-50%, -50%) scale(0.8);
+            transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    -webkit-transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
+  }
+}
+@-webkit-keyframes shadow {
+  from {
+    box-shadow: 0 0 0 100vmin rgba(24, 33, 45, 0), 0 0 10vmin rgba(13, 21, 31, 0);
+  }
+  to {
+    box-shadow: 0 0 0 100vmin rgba(24, 33, 45, 0.6), 0 0 10vmin rgba(13, 21, 31, 0.6);
+  }
+}
+@keyframes shadow {
+  from {
+    box-shadow: 0 0 0 100vmin rgba(24, 33, 45, 0), 0 0 10vmin rgba(13, 21, 31, 0);
+  }
+  to {
+    box-shadow: 0 0 0 100vmin rgba(24, 33, 45, 0.6), 0 0 10vmin rgba(13, 21, 31, 0.6);
+  }
+}
+
+gallery - Index
+===================================
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+}
+<br /><br /><br /><br />
+    <h2 class="text-center">Gallery</h2>
+    <hr />
+  
+    @if(ViewBag.Gallery!=null)
+{
+if (ViewBag.Gallery.Count > 0) {
+    int count = 1, count1 = 1, count2 = 1; ;
+    
+    string imgID = "";
+    <section class="gallery">
+        <div class="carousel ">
+
+            @foreach(var img in ViewBag.Gallery)
+            { 
+                
+            if(count==1)
+            { 
+                imgID = "image"+count;
+                <input type="radio" id='@imgID' name="gallery-control" checked>
+            }
+            else
+            {
+                imgID = "image" + count;
+                <input type="radio" id='@imgID' name="gallery-control">
+            }
+                count++;
+            }
+            
+            <input type="checkbox" id="fullscreen" name="gallery-fullscreen-control" />
+
+            <div class="wrap">
+                @foreach(var img in ViewBag.Gallery)
+                {
+                    imgID = "image" + count1;
+                <figure>
+                    <label for="fullscreen">
+                        <img src='@Url.Content(img.ImageLink)' alt='@imgID' />
+                    </label>
+                </figure>
+                    count1++;
+                }
+              
+            </div>
+
+            <div class="thumbnails">
+
+                <div class="slider"><div class="indicator"></div></div>
+                @foreach(var img in ViewBag.Gallery)
+                {
+                    imgID = "image" + count2;
+                <label for='@imgID' class="thumb" style="background-image: url('@Url.Content(img.ImageLink)')"></label>
+                    count2++;
+                }
+                
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <div class="alert alert-info" role="alert">No Gallery images exists.</div>
+}
+
+}
+
+GalleryController.cs
+===============================
+
+ public class GalleryController : BaseController
+    {
+        //
+        // GET: /Gallery/
+
+        public ActionResult Index()
+        {
+            CreateViewBagForGallery();
+            return View();
+        }
+
+        void CreateViewBagForGallery()
+        {
+            _commonHelper = new CommonHelper();
+
+            ViewBag.Gallery = _commonHelper.GetImages(CommonHelper.ImageType.Gallery);
+            _commonHelper = null;
+
+        }
+
+    }
+    
+    31-Aug-2017
+    ====================
+    DBQueries.sql
+    -------------------
+    
+    Insert into ApplicationSettings
+values
+('HomePage','WelcomeText','Welcome to our website. More text about camp horizon.'),
+('HomePage','WebsiteName','The Camp Horizon')
+
+Insert into ApplicationSettings
+values
+('AboutPage','AboutText','')
+    
+
+
+
+
+
+
+    
 
     
    
